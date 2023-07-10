@@ -6,16 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
-    React TODO List
+    <%= htmlWebpackPlugin.options.title %>
   </title>
   <!-- <link rel="stylesheet" href="style.css"> -->
-<link rel="icon" href="./logo.svg"><script defer src="./runtime.bundle.js"></script><script defer src="./index.bundle.js"></script></head>
+</head>
 
 <body>
   <div class="grid-container">
-    <div class="header">
-      <h1>To-Do List</h1>
-    </div>
+
     <div class="sidebar">
       <div class="menu">
         <button class="inbox side-menu" id="inbox-btn">
@@ -34,14 +32,14 @@
       <div class="projects">
         <h3>Projects</h3>
         <div class="projects-list">
-          <!-- <button class="project">
+          <button class="project">
             <img src="./img/list-box-outline.svg" alt="">
             <div class="project-name">Project 1</div>
             <div id="x"></div>
-          </button> -->
+          </button>
         </div>
         <div class="project-menu">
-          <!-- <button class="add-project-menu">
+          <button class="add-project-menu">
             <div id="plus"></div>
             <div class="add-project">Add Project</div>
           </button>
@@ -53,7 +51,7 @@
               <button class="button-add popup-button project-popup-button-add">Add</button>
               <button class="button-cancel popup-button project-popup-button-cancel">Cancel</button>
             </div>
-          </div> -->
+          </div>
         </div>
 
       </div>
@@ -64,14 +62,14 @@
       <h3 class="main-title"></h3>
       <div class="task-list" id="task-list">
 
-        <!-- <div class="task green">
+        <div class="task green">
           <div class="complete" id="o-clicked"></div>
           <div class="task-name active">My first task</div>
           <input type="text" class="task-name-input deactive">
           <div class="task-date active">13/11/2022</div>
           <input type="date" class="task-date-input deactive">
           <div class="close" id="x"></div>
-        </div> -->
+        </div>
 
       </div>
       <div class="task-menu">
