@@ -8,12 +8,14 @@
   <title>
     <%= htmlWebpackPlugin.options.title %>
   </title>
-  <!-- <link rel="stylesheet" href="style.css"> -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <div class="grid-container">
-
+    <div class="header">
+      <h1>React To-Do List</h1>
+    </div>
     <div class="sidebar">
       <div class="menu">
         <button class="inbox side-menu" id="inbox-btn">
@@ -29,6 +31,7 @@
           <div>This week</div>
         </button>
       </div>
+      
       <div class="projects">
         <h3>Projects</h3>
         <div class="projects-list">
@@ -38,12 +41,12 @@
             <div id="x"></div>
           </button>
         </div>
+
         <div class="project-menu">
           <button class="add-project-menu">
             <div id="plus"></div>
             <div class="add-project">Add Project</div>
           </button>
-
 
           <div class="popup-menu add-project-popup deactive" id="add-project-popup">
             <input type="text" class="popup-menu-input" name="" id="add-project-popup">
@@ -57,7 +60,6 @@
       </div>
     </div>
 
-    <!------------------------------------------------------------------------ ---- -->
     <div class="main-container">
       <h3 class="main-title"></h3>
       <div class="task-list" id="task-list">
@@ -75,7 +77,7 @@
       <div class="task-menu">
 
 
-        <!-- <button class="add-task-menu">
+        <button class="add-task-menu">
           <div id="plus"></div>
           <div class="add-task">Add task</div>
         </button>
@@ -86,7 +88,7 @@
             <button class="button-add popup-button task-popup-button-add">Add</button>
             <button class="button-cancel popup-button task-popup-button-cancel">Cancel</button>
           </div>
-        </div> -->
+        </div>
 
       </div>
     </div>

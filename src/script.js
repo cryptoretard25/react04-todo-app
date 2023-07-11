@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./app.js";
+import App from "./App.js";
 import "./style.css";
 
 const grid = document.querySelector(".grid-container");

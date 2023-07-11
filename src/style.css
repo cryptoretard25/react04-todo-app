@@ -1,13 +1,13 @@
 @font-face {
-  font-family: 'Beautiful-People';
-  src: url('./fonts/BeautifulPeople.ttf') format("truetype");
+  font-family: "Beautiful-People";
+  src: url("./fonts/BeautifulPeople.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Factory-LJDS';
-  src: url('./fonts/FactoryLjds.ttf') format("truetype");
+  font-family: "Factory-LJDS";
+  src: url("./fonts/FactoryLjds.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
 }
@@ -18,7 +18,6 @@
   box-sizing: border-box;
   list-style-type: none;
   text-decoration: none;
-
 }
 
 :root {
@@ -27,7 +26,7 @@
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
   --main-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-  Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --stale-900: #334155;
   --stale-400: #94a3b8;
   --stale-300: #cbd5e1;
@@ -58,14 +57,14 @@ body {
   min-height: 100vh;
   display: grid;
   grid-template-rows: 10rem 1fr 5rem;
-  grid-template-columns: minmax(25rem, 1fr) minmax(50rem ,5fr);
+  grid-template-columns: minmax(25rem, 1fr) minmax(50rem, 5fr);
   background-color: var(--stale-100);
 }
 
 .header {
   grid-column: 1/4;
   grid-row: 1;
-  font-family: 'Beautiful-People';
+  font-family: "Beautiful-People";
   background-color: var(--stale-900);
   color: white;
   padding-left: 2rem;
@@ -80,16 +79,15 @@ body {
 
   display: grid;
   grid-template-rows: 15rem 1fr;
-
 }
 
-.menu, .projects {
+.menu,
+.projects {
   padding: 0 1.5rem;
   -border: 1px solid blue;
   display: flex;
   flex-direction: column;
-  gap: 2px
-  
+  gap: 2px;
 }
 
 h3 {
@@ -98,7 +96,7 @@ h3 {
   display: flex;
   align-items: center;
 }
-.menu{
+.menu {
   justify-content: center;
 }
 .projects {
@@ -124,15 +122,16 @@ h3 {
   margin: 0 auto;
 }
 
-.task, .project {
+.task,
+.project {
   padding: 5px;
   display: flex;
   align-items: center;
-  gap: 1.5rem
+  gap: 1.5rem;
 }
 
 .footer {
-  font-family: 'Factory-LJDS';
+  font-family: "Factory-LJDS";
   grid-column: 1/4;
   grid-row: 3;
   background-color: var(--stale-900);
@@ -161,7 +160,7 @@ h3 {
   border: 3px solid var(--stale-900);
 }
 
-#o-clicked{
+#o-clicked {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,7 +173,7 @@ h3 {
   border: 3px solid var(--stale-900);
 }
 
-#o-clicked::before{
+#o-clicked::before {
   position: absolute;
   content: "";
   width: 1rem;
@@ -187,9 +186,24 @@ h3 {
   padding: 6px;
   cursor: pointer;
   border: 3px solid #334155;
-  background:
-    linear-gradient(45deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 43%, #fff 45%, #fff 55%, rgba(0, 0, 0, 0) 57%, rgba(0, 0, 0, 0) 100%),
-    linear-gradient(135deg, #334155 0%, #334155 43%, #fff 45%, #fff 55%, #334155 57%, #334155 100%);
+  background: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 43%,
+      #fff 45%,
+      #fff 55%,
+      rgba(0, 0, 0, 0) 57%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(
+      135deg,
+      #334155 0%,
+      #334155 43%,
+      #fff 45%,
+      #fff 55%,
+      #334155 57%,
+      #334155 100%
+    );
 }
 
 #plus {
@@ -197,9 +211,24 @@ h3 {
   cursor: pointer;
   display: inline-block;
   border: 3px solid #334155;
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 43%, #fff 45%, #fff 55%, rgba(0, 0, 0, 0) 57%, rgba(0, 0, 0, 0) 100%),
-    linear-gradient(180deg, #334155 0%, #334155 43%, #fff 45%, #fff 55%, #334155 57%, #334155 100%);
+  background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 43%,
+      #fff 45%,
+      #fff 55%,
+      rgba(0, 0, 0, 0) 57%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(
+      180deg,
+      #334155 0%,
+      #334155 43%,
+      #fff 45%,
+      #fff 55%,
+      #334155 57%,
+      #334155 100%
+    );
 }
 
 .add-task-menu {
@@ -216,100 +245,129 @@ h3 {
   background-color: var(--stale-200);
 }
 
-.side-menu:hover, .add-project-menu:hover, .project:hover {
+.side-menu:hover,
+.add-project-menu:hover,
+.project:hover {
   background-color: var(--stale-300);
 }
 
-.side-menu>img, .project>img {
+.side-menu > img,
+.project > img {
   height: 2.5rem;
 }
 
-.project{
+.project {
   display: flex;
   background-color: var(--stale-200);
   width: 100%;
   padding-right: 10px;
   cursor: pointer;
 }
-.projects-list{
+.projects-list {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
 }
-.project-name{
+.project-name {
   flex: 1;
   text-align: left;
 }
 
-.popup-menu{
+.popup-menu {
+
+
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 5px;
+ 
 }
 
-.popup-buttons{
+.error-div{
+
+  color: red;
+}
+
+.popup-menu-task {
+  border: 1px solid var(--stale-400);
+  border-radius: 5px;
+   padding: 1rem;
+}
+
+.popup-buttons {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
-.popup-button{
+.popup-button {
   font-weight: 700;
-  border:  1px solid var(--stale-400);
+  border: 1px solid var(--stale-400);
   padding: 8px 16px;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.button-add{
+.button-add {
   background-color: lightgreen;
 }
-.button-add:hover{
+.button-add:hover {
   background-color: rgba(144, 238, 144, 0.74);
 }
-.button-cancel{
+.button-cancel {
   background-color: lightcoral;
 }
-.button-cancel:hover{
-  background-color: rgba(240, 128, 128, 0.664)
+.button-cancel:hover {
+  background-color: rgba(240, 128, 128, 0.664);
 }
-.popup-menu-input{
+.popup-menu-input {
+  flex: 1;
   font-size: 1.6rem;
   border: 2px solid var(--stale-400);
   border-radius: 5px;
-  padding: 8px;
+  padding: 4px;
 }
-.popup-menu-input:focus{
+
+.task-container {
+  padding: 0 1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-menu-input:focus {
   outline: none;
 }
 
-.task-name-input{
+.task-name-input {
   font-size: 1.6rem;
   border: 1px solid var(--stale-400);
   border-radius: 5px;
   padding: 2px;
   flex: 1;
 }
-.task-name-input:focus{
+.task-name-input:focus {
   outline: none;
 }
 
-.task-date-input{
-  font-family: var(--main-font) ;
+.task-date-input {
+  font-family: var(--main-font);
   font-size: 1.6rem;
-  border: 1px solid var(--stale-400);
+  border: 2px solid var(--stale-400);
   border-radius: 5px;
   padding: 2px;
 }
+.task-date-input:focus{
+  outline: none;
+}
 
-.active{
+.active {
   display: flex;
 }
-.deactive{
+.deactive {
   display: none;
 }
-.green{
+.green {
   background-color: lightgreen;
 }
