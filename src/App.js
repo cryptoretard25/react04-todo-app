@@ -43,6 +43,7 @@ function Sidebar({ setSource }) {
       temp = temp.flat();
       thisWeek.setTasks(temp);
     }
+
     setSource(todoBack.getProject(projectName));
   };
 
@@ -56,9 +57,9 @@ function Sidebar({ setSource }) {
       <div className="projects">
         <h3>Projects</h3>
         <div className="projects-list">
-          <Project name={"Project 1"} />
-          <Project name={"Project 2"} />
-          <Project name={"Project 3"} />
+          <Project name={"Project 1"}  />
+          <Project name={"Project 2"}  />
+          <Project name={"Project 3"}  />
         </div>
         <div className="project-menu">
           {showProjectPopup ? (
@@ -102,9 +103,9 @@ function Footer() {
   return <div className="footer">Copyright © 2023 @cryptoretard</div>;
 }
 
-function Project({ name }) {
+function Project({ name, onclick }) {
   return (
-    <button className="project">
+    <button className="project" onClick={onclick}>
       <img src="./img/list-box-outline.svg" alt="" />
       <div className="project-name">{name}</div>
       <div id="x"></div>

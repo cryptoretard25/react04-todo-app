@@ -275,8 +275,6 @@ h3 {
 }
 
 .popup-menu {
-
-
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -284,7 +282,6 @@ h3 {
 }
 
 .error-div{
-
   color: red;
 }
 
@@ -292,6 +289,7 @@ h3 {
   border: 1px solid var(--stale-400);
   border-radius: 5px;
    padding: 1rem;
+   background-color: var(--stale-100);
 }
 
 .popup-buttons {
