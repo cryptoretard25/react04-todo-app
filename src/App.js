@@ -104,16 +104,6 @@ function Footer() {
   return <div className="footer">Copyright © 2023 @cryptoretard</div>;
 }
 
-// function Project({ name, onclick }) {
-//   return (
-//     <button className="project side-menu" onClick={onclick}>
-//       <img src="./img/list-box-outline.svg" alt="" />
-//       <div className="project-name">{name}</div>
-//       <div id="x"></div>
-//     </button>
-//   );
-// }
-
 function AddProject({ setShowProjectPopup }) {
   return (
     <button
@@ -152,7 +142,7 @@ function AddProjectPopup({ setShowProjectPopup }) {
 }
 
 function Project({ onclick, name, source }) {
-  const setActive = () => (source&&source.name === name ? "on-active" : "");
+  const setActive = () => (source && source.name === name ? "on-active" : "");
 
   if (name === "Inbox" || name === "Today" || name === "This week") {
     const lowerCase =
@@ -177,39 +167,6 @@ function Project({ onclick, name, source }) {
       </button>
     );
   }
-}
-
-function Inbox({ onclick, name, source }) {
-  const setActive = () => (source.name === name ? "on-active" : "");
-
-  return (
-    <button
-      onClick={onclick}
-      className={`inbox side-menu ${setActive()}`}
-      id="inbox-btn"
-    >
-      <img src="./img/inbox.svg" alt="" />
-      <div>{name}</div>
-    </button>
-  );
-}
-
-function Today({ onclick }) {
-  return (
-    <button onClick={onclick} className="today side-menu" id="today-btn">
-      <img src="./img/today.svg" alt="" />
-      <div>Today</div>
-    </button>
-  );
-}
-
-function ThisWeek({ onclick }) {
-  return (
-    <button onClick={onclick} className="week side-menu" id="thisweek-btn">
-      <img src="./img/calendar-week.svg" alt="" />
-      <div>This week</div>
-    </button>
-  );
 }
 
 function Title({ text }) {
