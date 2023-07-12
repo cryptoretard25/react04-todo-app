@@ -12,10 +12,11 @@ function Header() {
   );
 }
 
-function Sidebar({ setSource }) {
+function Sidebar({ source, setSource }) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
 
   const onProjectClick = (e) => {
+    const button = e.target.closest("button");
     const projectName = e.currentTarget.querySelector("div").textContent;
 
     if (projectName === "Today") {
@@ -31,7 +32,7 @@ function Sidebar({ setSource }) {
       today.setTasks(temp);
     }
 
-    if (projectName === 'This week') {
+    if (projectName === "This week") {
       const thisWeek = todoBack.getProject(projectName);
       let temp = [];
       for (let project of todoBack.projects) {
@@ -50,16 +51,16 @@ function Sidebar({ setSource }) {
   return (
     <div className="sidebar">
       <div className="menu">
-        <Inbox onclick={onProjectClick} />
-        <Today onclick={onProjectClick} />
-        <ThisWeek onclick={onProjectClick} />
+        <Project onclick={onProjectClick} name={"Inbox"} source={source} />
+        <Project onclick={onProjectClick} name={"Today"} source={source} />
+        <Project onclick={onProjectClick} name={"This week"} source={source} />
       </div>
       <div className="projects">
         <h3>Projects</h3>
         <div className="projects-list">
-          <Project name={"Project 1"}  />
-          <Project name={"Project 2"}  />
-          <Project name={"Project 3"}  />
+          <Project name={"Project 1"} />
+          <Project name={"Project 2"} />
+          <Project name={"Project 3"} />
         </div>
         <div className="project-menu">
           {showProjectPopup ? (
@@ -103,15 +104,15 @@ function Footer() {
   return <div className="footer">Copyright © 2023 @cryptoretard</div>;
 }
 
-function Project({ name, onclick }) {
-  return (
-    <button className="project" onClick={onclick}>
-      <img src="./img/list-box-outline.svg" alt="" />
-      <div className="project-name">{name}</div>
-      <div id="x"></div>
-    </button>
-  );
-}
+// function Project({ name, onclick }) {
+//   return (
+//     <button className="project side-menu" onClick={onclick}>
+//       <img src="./img/list-box-outline.svg" alt="" />
+//       <div className="project-name">{name}</div>
+//       <div id="x"></div>
+//     </button>
+//   );
+// }
 
 function AddProject({ setShowProjectPopup }) {
   return (
@@ -150,11 +151,45 @@ function AddProjectPopup({ setShowProjectPopup }) {
   );
 }
 
-function Inbox({ onclick }) {
+function Project({ onclick, name, source }) {
+  const setActive = () => (source&&source.name === name ? "on-active" : "");
+
+  if (name === "Inbox" || name === "Today" || name === "This week") {
+    const lowerCase =
+      name === "This week" ? name.substring(5) : name.toLowerCase();
+
+    return (
+      <button
+        onClick={onclick}
+        className={`project side-menu ${setActive()}`}
+        id={`${lowerCase}-btn`}
+      >
+        <img src={`./img/${lowerCase}.svg`} alt="" />
+        <div>{name}</div>
+      </button>
+    );
+  } else {
+    return (
+      <button className={`project side-menu ${setActive()}`} onClick={onclick}>
+        <img src="./img/list-box-outline.svg" alt="" />
+        <div className="project-name">{name}</div>
+        <div id="x"></div>
+      </button>
+    );
+  }
+}
+
+function Inbox({ onclick, name, source }) {
+  const setActive = () => (source.name === name ? "on-active" : "");
+
   return (
-    <button onClick={onclick} className="inbox side-menu" id="inbox-btn">
+    <button
+      onClick={onclick}
+      className={`inbox side-menu ${setActive()}`}
+      id="inbox-btn"
+    >
       <img src="./img/inbox.svg" alt="" />
-      <div>Inbox</div>
+      <div>{name}</div>
     </button>
   );
 }
@@ -162,7 +197,7 @@ function Inbox({ onclick }) {
 function Today({ onclick }) {
   return (
     <button onClick={onclick} className="today side-menu" id="today-btn">
-      <img src="./img/calendar-today.svg" alt="" />
+      <img src="./img/today.svg" alt="" />
       <div>Today</div>
     </button>
   );
@@ -294,7 +329,7 @@ function App() {
   return (
     <>
       <Header />
-      <Sidebar setSource={setCurrentProject} />
+      <Sidebar source={currentProject} setSource={setCurrentProject} />
       <Main source={currentProject} />
       <Footer />
     </>

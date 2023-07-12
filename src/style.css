@@ -251,6 +251,10 @@ h3 {
   background-color: var(--stale-300);
 }
 
+.on-active{
+  background-color: var(--stale-300);
+}
+
 .side-menu > img,
 .project > img {
   height: 2.5rem;
@@ -258,7 +262,6 @@ h3 {
 
 .project {
   display: flex;
-  background-color: var(--stale-200);
   width: 100%;
   padding-right: 10px;
   cursor: pointer;
