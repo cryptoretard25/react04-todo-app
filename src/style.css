@@ -260,6 +260,10 @@ h3 {
   height: 2.5rem;
 }
 
+button:active{
+  transform: scale(0.98);
+}
+
 .project {
   display: flex;
   width: 100%;

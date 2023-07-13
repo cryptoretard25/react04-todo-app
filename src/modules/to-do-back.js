@@ -9,18 +9,32 @@ export default class TodoBackEnd {
     this.projects.push(new Project('Today'));
     this.projects.push(new Project('This week'));
   }
+
   setProjects(projects){
     this.projects = projects;
   }
+
+  getUserProjects(){
+    const temp = [];
+    for(const project of this.projects){
+      if(project.name === 'Inbox'|| project.name === 'Today' || project.name === "This week") continue;
+      temp.push(project)
+    }
+    return temp
+  }
+
   getProjects(){
     return this.projects;
   }
+
   getProject(name){
     return this.projects.find(project => project.name === name)
   }
+
   getProjectByUID(uid){
     return this.projects.find(project=> project.getUID()===uid)
   }
+
   contains(name){
     return this.projects.some(project => project.name === name)
   }
@@ -29,6 +43,7 @@ export default class TodoBackEnd {
     if(this.projects.find(project=> project.name === newProject.name)) return;
     this.projects.push(newProject)
   }
+
   deleteProject(uid){
     const index = this.projects.findIndex(project => project.uid === uid);
     if (index !== -1) this.projects.splice(index, 1)

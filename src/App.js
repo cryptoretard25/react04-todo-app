@@ -12,8 +12,9 @@ function Header() {
   );
 }
 
-function Sidebar({ source, setSource }) {
+function Sidebar({ source, setSource}) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
+  const [userProjects, setUserProjects] = useState(todoBack.getUserProjects())
 
   return (
     <div className="sidebar">
@@ -33,7 +34,9 @@ function Sidebar({ source, setSource }) {
           {showProjectPopup ? (
             <AddProjectPopup setShowProjectPopup={setShowProjectPopup} />
           ) : (
-            <AddProject setShowProjectPopup={setShowProjectPopup} />
+            <AddProject
+              setShowProjectPopup={setShowProjectPopup}
+            />
           )}
         </div>
       </div>
@@ -83,7 +86,12 @@ function AddProject({ setShowProjectPopup }) {
   );
 }
 
-function AddProjectPopup({ setShowProjectPopup }) {
+function AddProjectPopup({ setShowProjectPopup, setProjects }) {
+  const addProjectHandler = () => {
+    console.log(todoBack.getUserProjects())
+    console.log('Add project clicked')
+  };
+
   return (
     <div className="popup-menu add-project-popup" id="add-project-popup">
       <input
@@ -94,7 +102,10 @@ function AddProjectPopup({ setShowProjectPopup }) {
         placeholder="Project name"
       />
       <div className="popup-buttons">
-        <button className="button-add popup-button project-popup-button-add">
+        <button
+          className="button-add popup-button project-popup-button-add"
+          onClick={addProjectHandler}
+        >
           Add
         </button>
         <button
@@ -282,10 +293,17 @@ function App() {
   const [currentProject, setCurrentProject] = useState(
     todoBack.getProject("Inbox")
   );
+  //const [projects, setProjects] = useState(todoBack.projects);
+
   return (
     <>
       <Header />
-      <Sidebar source={currentProject} setSource={setCurrentProject} />
+      <Sidebar
+        source={currentProject}
+        setSource={setCurrentProject}
+        // projects={projects}
+        // setProjects={setProjects}
+      />
       <Main source={currentProject} />
       <Footer />
     </>
