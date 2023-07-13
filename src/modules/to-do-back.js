@@ -1,51 +1,56 @@
 import Project from "./projects";
 
-const {log} = console
-
 export default class TodoBackEnd {
   constructor() {
-    this.projects = []
-    this.projects.push(new Project('Inbox'));
-    this.projects.push(new Project('Today'));
-    this.projects.push(new Project('This week'));
+    this.projects = [];
+    this.projects.push(new Project("Inbox"));
+    this.projects.push(new Project("Today"));
+    this.projects.push(new Project("This week"));
   }
 
-  setProjects(projects){
+  setProjects(projects) {
     this.projects = projects;
   }
 
-  getUserProjects(){
-    const temp = [];
-    for(const project of this.projects){
-      if(project.name === 'Inbox'|| project.name === 'Today' || project.name === "This week") continue;
-      temp.push(project)
-    }
-    return temp
+  getUserProjects() {
+    return this.projects.filter(
+      (project) =>
+        project.name !== "Inbox" &&
+        project.name !== "Today" &&
+        project.name !== "This week"
+    );
   }
 
-  getProjects(){
+  getProjects() {
     return this.projects;
   }
 
-  getProject(name){
-    return this.projects.find(project => project.name === name)
+  getProject(name) {
+    return this.projects.find((project) => project.name === name);
   }
 
-  getProjectByUID(uid){
-    return this.projects.find(project=> project.getUID()===uid)
+  getProjectByUID(uid) {
+    return this.projects.find((project) => project.getUID() === uid);
   }
 
-  contains(name){
-    return this.projects.some(project => project.name === name)
+  contains(name) {
+    return this.projects.some((project) => project.name === name);
   }
 
-  addProject(newProject){
-    if(this.projects.find(project=> project.name === newProject.name)) return;
-    this.projects.push(newProject)
+  addProject(newProject) {
+    if (this.projects.find((project) => project.name === newProject.name))
+      return;
+    this.projects.push(newProject);
   }
 
-  deleteProject(uid){
-    const index = this.projects.findIndex(project => project.uid === uid);
-    if (index !== -1) this.projects.splice(index, 1)
+  addUserProject(name){
+    if (!name) throw new Error('empty')
+    if (this.projects.find((project)=> project.name === name)) throw Error("exists");
+    this.projects.push(new Project(name))
+  }
+
+  deleteProject(uid) {
+    const index = this.projects.findIndex((project) => project.uid === uid);
+    if (index !== -1) this.projects.splice(index, 1);
   }
 }

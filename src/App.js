@@ -12,9 +12,9 @@ function Header() {
   );
 }
 
-function Sidebar({ source, setSource}) {
+function Sidebar({ source, setSource }) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
-  const [userProjects, setUserProjects] = useState(todoBack.getUserProjects())
+  const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
 
   return (
     <div className="sidebar">
@@ -26,17 +26,18 @@ function Sidebar({ source, setSource}) {
       <div className="projects">
         <h3>Projects</h3>
         <div className="projects-list">
-          <Project name={"Project 1"} />
-          <Project name={"Project 2"} />
-          <Project name={"Project 3"} />
+          {userProjects.map((project) => {
+            return <Project key={project.uid} name={project.name} source={source} setSource={setSource}/>
+          })}
         </div>
         <div className="project-menu">
           {showProjectPopup ? (
-            <AddProjectPopup setShowProjectPopup={setShowProjectPopup} />
-          ) : (
-            <AddProject
+            <AddProjectPopup
               setShowProjectPopup={setShowProjectPopup}
+              setUserProjects={setUserProjects}
             />
+          ) : (
+            <AddProject setShowProjectPopup={setShowProjectPopup} />
           )}
         </div>
       </div>
@@ -86,20 +87,53 @@ function AddProject({ setShowProjectPopup }) {
   );
 }
 
-function AddProjectPopup({ setShowProjectPopup, setProjects }) {
+function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
+  const blankUserProject = { name: "" };
+  const [userProject, setUserProject] = useState(blankUserProject);
+  const [error, setError] = useState(null);
+
   const addProjectHandler = () => {
-    console.log(todoBack.getUserProjects())
-    console.log('Add project clicked')
+    try {
+      todoBack.addUserProject(userProject.name);
+      setUserProjects(todoBack.getUserProjects())
+      setUserProject(blankUserProject);
+      setError(`"${userProject.name}" added!`);
+
+      Storage.saveTodoBack(todoBack)
+    } catch (error) {
+      if (error.message === "empty") setError("Error! Fill project name field!");
+      else if (error.message === "exists") setError("Error! Project already exists!");
+    }
+    setTimeout(() => setError(null), 2000);
+    console.log("Add project clicked");
+  };
+
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setUserProject((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <div className="popup-menu add-project-popup" id="add-project-popup">
+      <div
+        className="error-div"
+        style={
+          error && error.includes("Error!")
+            ? { color: "red" }
+            : { color: "black" }
+        }
+      >
+        {error}
+      </div>
       <input
         type="text"
         className="popup-menu-input"
-        name=""
+        name="name"
         id="add-project-popup"
         placeholder="Project name"
+        value={userProject.name}
+        onChange={onChangeHandler}
+        maxLength={20}
       />
       <div className="popup-buttons">
         <button
@@ -124,6 +158,7 @@ function Project({ name, source, setSource }) {
 
   const onProjectClick = (e) => {
     const projectName = e.currentTarget.querySelector("div").textContent;
+    console.log(projectName)
 
     if (projectName === "Today") {
       const today = todoBack.getProject(projectName);
@@ -170,7 +205,10 @@ function Project({ name, source, setSource }) {
     );
   } else {
     return (
-      <button className={`project side-menu ${setActive()}`} onClick={onclick}>
+      <button
+        className={`project side-menu ${setActive()}`}
+        onClick={onProjectClick}
+      >
         <img src="./img/list-box-outline.svg" alt="" />
         <div className="project-name">{name}</div>
         <div id="x"></div>
