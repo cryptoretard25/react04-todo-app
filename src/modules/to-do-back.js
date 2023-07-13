@@ -45,7 +45,7 @@ export default class TodoBackEnd {
 
   addUserProject(name){
     if (!name) throw new Error('empty')
-    if (this.projects.find((project)=> project.name === name)) throw Error("exists");
+    if (this.projects.find((project)=> project.name.toLowerCase() === name.toLowerCase())) throw Error("exists");
     this.projects.push(new Project(name))
   }
 

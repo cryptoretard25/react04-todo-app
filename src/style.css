@@ -260,7 +260,7 @@ h3 {
   height: 2.5rem;
 }
 
-button:active{
+button:not(.project):active{
   transform: scale(0.98);
 }
 

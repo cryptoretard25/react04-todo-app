@@ -27,7 +27,14 @@ function Sidebar({ source, setSource }) {
         <h3>Projects</h3>
         <div className="projects-list">
           {userProjects.map((project) => {
-            return <Project key={project.uid} name={project.name} source={source} setSource={setSource}/>
+            return (
+              <Project
+                key={project.uid}
+                name={project.name}
+                source={source}
+                setSource={setSource}
+              />
+            );
           })}
         </div>
         <div className="project-menu">
@@ -72,7 +79,7 @@ function Main({ source }) {
 }
 
 function Footer() {
-  return <div className="footer">Copyright © 2023 @cryptoretard</div>;
+  return <div className="footer">React TODO © 2023 @cryptoretard</div>;
 }
 
 function AddProject({ setShowProjectPopup }) {
@@ -95,14 +102,16 @@ function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
   const addProjectHandler = () => {
     try {
       todoBack.addUserProject(userProject.name);
-      setUserProjects(todoBack.getUserProjects())
+      setUserProjects(todoBack.getUserProjects());
       setUserProject(blankUserProject);
       setError(`"${userProject.name}" added!`);
 
-      Storage.saveTodoBack(todoBack)
+      Storage.saveTodoBack(todoBack);
     } catch (error) {
-      if (error.message === "empty") setError("Error! Fill project name field!");
-      else if (error.message === "exists") setError("Error! Project already exists!");
+      if (error.message === "empty")
+        setError("Error! Fill project name field!");
+      else if (error.message === "exists")
+        setError("Error! Project already exists!");
     }
     setTimeout(() => setError(null), 2000);
     console.log("Add project clicked");
@@ -157,6 +166,7 @@ function Project({ name, source, setSource }) {
   const setActive = () => (source && source.name === name ? "on-active" : "");
 
   const onProjectClick = (e) => {
+    if (e.target.id === "x") return;
     const projectName = e.currentTarget.querySelector("div").textContent;
 
     if (projectName === "Today") {
@@ -210,7 +220,7 @@ function Project({ name, source, setSource }) {
       >
         <img src="./img/list-box-outline.svg" alt="" />
         <div className="project-name">{name}</div>
-        <div id="x"></div>
+        <div id="x" onClick={() => console.log("x clicked")}></div>
       </button>
     );
   }
@@ -334,10 +344,7 @@ function App() {
   return (
     <>
       <Header />
-      <Sidebar
-        source={currentProject}
-        setSource={setCurrentProject}
-      />
+      <Sidebar source={currentProject} setSource={setCurrentProject} />
       <Main source={currentProject} />
       <Footer />
     </>
