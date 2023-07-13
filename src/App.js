@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
-import { el } from "date-fns/locale";
 
 const todoBack = Storage.getTodoBack();
 
@@ -69,7 +68,6 @@ function Sidebar({ currentProject, setCurrentProject }) {
 function Main({ currentProject, setCurrentProject }) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
   const [tasks, setTasks] = useState(currentProject.tasks);
-  console.log(currentProject.tasks);
 
   return (
     <div className="main-container">
@@ -78,6 +76,9 @@ function Main({ currentProject, setCurrentProject }) {
         {/* <Task name={"My 1st task"} clicked={true} />
         <Task name={"My 2nd task"} clicked={false} />
         <Task name={"My 3rd task"} clicked={false} /> */}
+        {tasks.map(task=>{
+          return <Task task={task} key={task.uid}/>
+        })}
       </div>
       {currentProject.name === "Today" ||
       currentProject.name === "This week" ? null : (
@@ -86,7 +87,7 @@ function Main({ currentProject, setCurrentProject }) {
             <AddTaskPopup
               setshowTaskPopup={setshowTaskPopup}
               currentProject={currentProject}
-              setCurrentProject={setCurrentProject}
+              setTasks={setTasks}
             />
           ) : (
             <AddTask setshowTaskPopup={setshowTaskPopup} />
@@ -258,20 +259,20 @@ function Title({ text }) {
   return <h3 className="main-title">{text}</h3>;
 }
 
-function Task({ name, completed, uid }) {
+function Task({ task }) {
   const lineTrough = () => {
-    return completed ? { textDecoration: "line-through" } : null;
+    return task.completed ? { textDecoration: "line-through" } : null;
   };
 
   return (
-    <div className="task" dataset-uid={uid}>
-      <div className="complete" id={completed ? "o-clicked" : "o"}></div>
+    <div className="task" dataset-uid={task.uid}>
+      <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
-        {name}
+        {task.title}
       </div>
       <input type="text" className="task-name-input deactive" />
       <div className="task-date active" style={lineTrough()}>
-        13/11/2022
+        {task.getDueDate()}
       </div>
       <input type="date" className="task-date-input deactive" />
       <div className="close" id="x"></div>
@@ -288,7 +289,7 @@ function AddTask({ setshowTaskPopup }) {
   );
 }
 
-function AddTaskPopup({ setshowTaskPopup, currentProject, setCurrentProject }) {
+function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
   const [error, setError] = useState(null);
   const [todo, setTodo] = useState({
     title: "",
@@ -301,32 +302,40 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setCurrentProject }) {
     setTodo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const _addTask = () => {
-    if (!todo.title || !todo.date) {
-      setError("Error! You must fill all the fields properly!");
-      setTimeout(() => setError(null), 2000);
-      return;
-    }
+  const formatDate = (date) =>{
+    let temp = date.split('-');
+    return `${temp[2]}/${temp[1]}/${temp[0]}`
+  }
 
-    currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
-    setCurrentProject(currentProject);
-    setError(`Task: "${todo.title}". Expiration date: ${todo.date}`);
-    setTimeout(() => setError(null), 4000);
-    console.log(currentProject);
-  };
+  // const _addTask = () => {
+  //   if (!todo.title || !todo.date) {
+  //     setError("Error! You must fill all the fields properly!");
+  //     setTimeout(() => setError(null), 2000);
+  //     return;
+  //   }
+
+  //   currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
+  //   setTasks(currentProject.tasks);
+  //   setError(`Task: "${todo.title}". Expiration date: ${todo.date}`);
+  //   setTimeout(() => setError(null), 4000);
+  //   console.log(currentProject);
+  // };
 
   const addTask = () => {
     try {
       currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
-      setCurrentProject(currentProject);
-      setError(`Task: "${todo.title}". Expiration date: ${todo.date}`);
+      setTasks([...currentProject.tasks]);
+      setError(`Task: "${todo.title}" added. Expiration date: ${formatDate(todo.date)}`);
+      Storage.saveTodoBack(todoBack)
     } catch (error) {
-      if(error.message==='empty') setError("Error! You must fill all the fields properly!");
-      else if(error.message === 'exists') setError(`Error! Task "${todo.title}" already exist!`)
+      if (error.message === "empty")
+        setError("Error! You must fill all the fields properly!");
+      else if (error.message === "exists")
+        setError(`Error! Task "${todo.title}" already exist!`);
     }
     setTimeout(() => setError(null), 4000);
-    console.log(currentProject);
-    console.log(todoBack.projects)
+    // console.log(currentProject);
+    // console.log(todoBack.projects);
   };
 
   return (
