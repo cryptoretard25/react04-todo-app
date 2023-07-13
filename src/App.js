@@ -33,6 +33,7 @@ function Sidebar({ source, setSource }) {
                 name={project.name}
                 source={source}
                 setSource={setSource}
+                setUserProjects={setUserProjects}
               />
             );
           })}
@@ -162,7 +163,7 @@ function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
   );
 }
 
-function Project({ name, source, setSource }) {
+function Project({ name, source, setSource, setUserProjects }) {
   const setActive = () => (source && source.name === name ? "on-active" : "");
 
   const onProjectClick = (e) => {
@@ -198,6 +199,14 @@ function Project({ name, source, setSource }) {
     setSource(todoBack.getProject(projectName));
   };
 
+  const removeProject = (e) => {
+    const project = todoBack.getProject(e.target.previousSibling.textContent)
+    todoBack.deleteProject(project.uid)
+    setUserProjects(todoBack.getUserProjects());
+
+    Storage.saveTodoBack(todoBack);
+  };
+
   if (name === "Inbox" || name === "Today" || name === "This week") {
     const lowerCase =
       name === "This week" ? name.substring(5) : name.toLowerCase();
@@ -220,7 +229,7 @@ function Project({ name, source, setSource }) {
       >
         <img src="./img/list-box-outline.svg" alt="" />
         <div className="project-name">{name}</div>
-        <div id="x" onClick={() => console.log("x clicked")}></div>
+        <div id="x" onClick={removeProject}></div>
       </button>
     );
   }
