@@ -158,7 +158,6 @@ function Project({ name, source, setSource }) {
 
   const onProjectClick = (e) => {
     const projectName = e.currentTarget.querySelector("div").textContent;
-    console.log(projectName)
 
     if (projectName === "Today") {
       const today = todoBack.getProject(projectName);
@@ -331,7 +330,6 @@ function App() {
   const [currentProject, setCurrentProject] = useState(
     todoBack.getProject("Inbox")
   );
-  //const [projects, setProjects] = useState(todoBack.projects);
 
   return (
     <>
@@ -339,8 +337,6 @@ function App() {
       <Sidebar
         source={currentProject}
         setSource={setCurrentProject}
-        // projects={projects}
-        // setProjects={setProjects}
       />
       <Main source={currentProject} />
       <Footer />
