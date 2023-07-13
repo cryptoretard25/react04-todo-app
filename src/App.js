@@ -12,7 +12,7 @@ function Header() {
   );
 }
 
-function Sidebar({ currentProject, setCurrentProject }) {
+function Sidebar({ currentProject, setCurrentProject, setTasks }) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
   const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
 
@@ -23,16 +23,19 @@ function Sidebar({ currentProject, setCurrentProject }) {
           setCurrentProject={setCurrentProject}
           name={"Inbox"}
           currentProject={currentProject}
+          setTasks={setTasks}
         />
         <Project
           setCurrentProject={setCurrentProject}
           name={"Today"}
           currentProject={currentProject}
+          setTasks={setTasks}
         />
         <Project
           setCurrentProject={setCurrentProject}
           name={"This week"}
           currentProject={currentProject}
+          setTasks={setTasks}
         />
       </div>
       <div className="projects">
@@ -46,6 +49,7 @@ function Sidebar({ currentProject, setCurrentProject }) {
                 currentProject={currentProject}
                 setCurrentProject={setCurrentProject}
                 setUserProjects={setUserProjects}
+                setTasks={setTasks}
               />
             );
           })}
@@ -65,19 +69,16 @@ function Sidebar({ currentProject, setCurrentProject }) {
   );
 }
 
-function Main({ currentProject, setCurrentProject }) {
+function Main({ tasks, setTasks, currentProject, setCurrentProject }) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
-  const [tasks, setTasks] = useState(currentProject.tasks);
+  
 
   return (
     <div className="main-container">
       <Title text={currentProject.name} />
       <div className="task-list" id="task-list">
-        {/* <Task name={"My 1st task"} clicked={true} />
-        <Task name={"My 2nd task"} clicked={false} />
-        <Task name={"My 3rd task"} clicked={false} /> */}
-        {tasks.map(task=>{
-          return <Task task={task} key={task.uid}/>
+        {tasks.map((task) => {
+          return <Task task={task} key={task.uid} />;
         })}
       </div>
       {currentProject.name === "Today" ||
@@ -87,6 +88,7 @@ function Main({ currentProject, setCurrentProject }) {
             <AddTaskPopup
               setshowTaskPopup={setshowTaskPopup}
               currentProject={currentProject}
+              setCurrentProject={setCurrentProject}
               setTasks={setTasks}
             />
           ) : (
@@ -182,7 +184,7 @@ function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
   );
 }
 
-function Project({ name, currentProject, setCurrentProject, setUserProjects }) {
+function Project({ name, currentProject, setCurrentProject, setUserProjects, setTasks }) {
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
 
@@ -201,6 +203,7 @@ function Project({ name, currentProject, setCurrentProject, setUserProjects }) {
       }
       temp = temp.flat();
       today.setTasks(temp);
+      setTasks(temp)
     }
 
     if (projectName === "This week") {
@@ -214,9 +217,11 @@ function Project({ name, currentProject, setCurrentProject, setUserProjects }) {
       }
       temp = temp.flat();
       thisWeek.setTasks(temp);
+      setTasks(temp);
     }
 
     setCurrentProject(todoBack.getProject(projectName));
+    setTasks(todoBack.getProject(projectName).tasks);
   };
 
   const removeProject = (e) => {
@@ -307,20 +312,6 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
     return `${temp[2]}/${temp[1]}/${temp[0]}`
   }
 
-  // const _addTask = () => {
-  //   if (!todo.title || !todo.date) {
-  //     setError("Error! You must fill all the fields properly!");
-  //     setTimeout(() => setError(null), 2000);
-  //     return;
-  //   }
-
-  //   currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
-  //   setTasks(currentProject.tasks);
-  //   setError(`Task: "${todo.title}". Expiration date: ${todo.date}`);
-  //   setTimeout(() => setError(null), 4000);
-  //   console.log(currentProject);
-  // };
-
   const addTask = () => {
     try {
       currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
@@ -334,8 +325,6 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
         setError(`Error! Task "${todo.title}" already exist!`);
     }
     setTimeout(() => setError(null), 4000);
-    // console.log(currentProject);
-    // console.log(todoBack.projects);
   };
 
   return (
@@ -393,15 +382,20 @@ function App() {
   const [currentProject, setCurrentProject] = useState(
     todoBack.getProject("Inbox")
   );
+  const [tasks, setTasks] = useState([...currentProject.tasks]);
 
+  console.log(currentProject)
   return (
     <>
       <Header />
       <Sidebar
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
+        setTasks={setTasks}
       />
       <Main
+        tasks = {tasks}
+        setTasks = {setTasks}
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
       />
