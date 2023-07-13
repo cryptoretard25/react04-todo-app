@@ -15,45 +15,12 @@ function Header() {
 function Sidebar({ source, setSource }) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
 
-  const onProjectClick = (e) => {
-    const button = e.target.closest("button");
-    const projectName = e.currentTarget.querySelector("div").textContent;
-
-    if (projectName === "Today") {
-      const today = todoBack.getProject(projectName);
-      let temp = [];
-      for (let project of todoBack.projects) {
-        project.sortByCompleted();
-        if (project.getName() === "Today" || project.getName() === "This week")
-          continue;
-        temp.push(project.todayTasks());
-      }
-      temp = temp.flat();
-      today.setTasks(temp);
-    }
-
-    if (projectName === "This week") {
-      const thisWeek = todoBack.getProject(projectName);
-      let temp = [];
-      for (let project of todoBack.projects) {
-        project.sortByCompleted();
-        if (project.getName() === "Today" || project.getName() === "This week")
-          continue;
-        temp.push(project.thisWeekTasks());
-      }
-      temp = temp.flat();
-      thisWeek.setTasks(temp);
-    }
-
-    setSource(todoBack.getProject(projectName));
-  };
-
   return (
     <div className="sidebar">
       <div className="menu">
-        <Project onclick={onProjectClick} name={"Inbox"} source={source} />
-        <Project onclick={onProjectClick} name={"Today"} source={source} />
-        <Project onclick={onProjectClick} name={"This week"} source={source} />
+        <Project setSource={setSource} name={"Inbox"} source={source} />
+        <Project setSource={setSource} name={"Today"} source={source} />
+        <Project setSource={setSource} name={"This week"} source={source} />
       </div>
       <div className="projects">
         <h3>Projects</h3>
@@ -141,8 +108,40 @@ function AddProjectPopup({ setShowProjectPopup }) {
   );
 }
 
-function Project({ onclick, name, source }) {
+function Project({ name, source, setSource }) {
   const setActive = () => (source && source.name === name ? "on-active" : "");
+
+  const onProjectClick = (e) => {
+    const projectName = e.currentTarget.querySelector("div").textContent;
+
+    if (projectName === "Today") {
+      const today = todoBack.getProject(projectName);
+      let temp = [];
+      for (let project of todoBack.projects) {
+        project.sortByCompleted();
+        if (project.getName() === "Today" || project.getName() === "This week")
+          continue;
+        temp.push(project.todayTasks());
+      }
+      temp = temp.flat();
+      today.setTasks(temp);
+    }
+
+    if (projectName === "This week") {
+      const thisWeek = todoBack.getProject(projectName);
+      let temp = [];
+      for (let project of todoBack.projects) {
+        project.sortByCompleted();
+        if (project.getName() === "Today" || project.getName() === "This week")
+          continue;
+        temp.push(project.thisWeekTasks());
+      }
+      temp = temp.flat();
+      thisWeek.setTasks(temp);
+    }
+
+    setSource(todoBack.getProject(projectName));
+  };
 
   if (name === "Inbox" || name === "Today" || name === "This week") {
     const lowerCase =
@@ -150,7 +149,7 @@ function Project({ onclick, name, source }) {
 
     return (
       <button
-        onClick={onclick}
+        onClick={onProjectClick}
         className={`project side-menu ${setActive()}`}
         id={`${lowerCase}-btn`}
       >
@@ -173,13 +172,13 @@ function Title({ text }) {
   return <h3 className="main-title">{text}</h3>;
 }
 
-function Task({ name, clicked }) {
+function Task({ name, clicked, uid }) {
   const lineTrough = () => {
     return clicked ? { textDecoration: "line-through" } : null;
   };
 
   return (
-    <div className="task">
+    <div className="task" dataset-uid={uid}>
       <div className="complete" id={clicked ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
         {name}
