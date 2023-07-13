@@ -1,9 +1,9 @@
 const uuid = require('uuid')
 
 export default class Todo {
-  constructor(title, source){
+  constructor(title, date, source){
     this.title = title
-    this.dueDate = 'No date';
+    this.dueDate = date;
     this.completed = false;
     this.uid = uuid.v4();
     this.source = source;

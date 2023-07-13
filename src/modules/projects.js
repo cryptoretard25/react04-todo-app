@@ -2,104 +2,109 @@ const uuid = require('uuid')
 
 const {log} = console;
 import { toDate, isToday, isThisWeek, subDays } from "date-fns";
+import Todo from "./todos";
 
 export default class Project {
-  constructor(name){
+  constructor(name) {
     this.name = name;
     this.uid = uuid.v4();
     this.tasks = [];
     this.completed = [];
   }
 
-  setName(name){
-    this.name = name
+  setName(name) {
+    this.name = name;
   }
 
-  getName(){
+  getName() {
     return this.name;
   }
 
-  getUID(){
+  getUID() {
     return this.uid;
   }
 
-  setTasks(tasks){
+  setTasks(tasks) {
     this.tasks = tasks;
   }
 
-  getTasks(){
+  getTasks() {
     return this.tasks;
   }
 
-
-  getCompleted(){
+  getCompleted() {
     return this.completed;
   }
 
-  setCompleted(completed){
+  setCompleted(completed) {
     this.completed = completed;
   }
-  
-  getTask(title){
-    return this.tasks.find(task => task.title === title)
+
+  getTask(title) {
+    return this.tasks.find((task) => task.title === title);
   }
 
-  getCompletedTask(title){
-    return this.completed.find(todo => todo.title === title)
+  getCompletedTask(title) {
+    return this.completed.find((todo) => todo.title === title);
   }
 
-  getTaskByUID(uid){
-    return this.tasks.find(task=> task.uid === uid)
+  getTaskByUID(uid) {
+    return this.tasks.find((task) => task.uid === uid);
   }
 
-  getCompletedTaskByUID(uid){
-    return this.completed.find(todo => todo.uid === uid)
+  getCompletedTaskByUID(uid) {
+    return this.completed.find((todo) => todo.uid === uid);
   }
 
-  contains(title){
-    return this.tasks.some(task=> task.title === title)
-  }
-  
-  completedContains(title){
-    return this.completed.some(todo => todo.title === title);
+  contains(title) {
+    return this.tasks.some((task) => task.title === title);
   }
 
-  addTask(newTask){
-    if(this.tasks.find(task=>task.title===newTask.title)) return;
-    this.tasks.push(newTask)
+  completedContains(title) {
+    return this.completed.some((todo) => todo.title === title);
   }
 
-  addCompleted(task){
+  addTask(newTask) {
+    if (this.tasks.find((task) => task.title === newTask.title)) return;
+    this.tasks.push(newTask);
+  }
+
+  addUserTask(name, date, source){
+    if(!name||!date||!source) throw new Error('empty')
+    if(this.tasks.find(task=> task.title.toLowerCase() === name.toLowerCase())) throw new Error('exists')
+    this.tasks.push(new Todo(name, date, source));
+  }
+
+  addCompleted(task) {
     //this.removeTask(task.uid);
     this.completed.push(task);
   }
 
-  sortByCompleted(){
-    this.getTasks().sort((a, b) => b.completed - a.completed)
+  sortByCompleted() {
+    this.getTasks().sort((a, b) => b.completed - a.completed);
   }
 
-  removeTask(uid){
-    this.tasks = this.tasks.filter(task => task.uid !== uid)
+  removeTask(uid) {
+    this.tasks = this.tasks.filter((task) => task.uid !== uid);
   }
 
-  removeCompleted(uid){
-    this.completed = this.completed.filter(todo => todo.uid !== uid);  
+  removeCompleted(uid) {
+    this.completed = this.completed.filter((todo) => todo.uid !== uid);
   }
 
-  todayTasks(){
-    return this.tasks.filter(task=>{
-      const f = task.getFormattedDate()
-      const taskDate = new Date(`${f.month}/${f.day}/${f.year}`)
-      return isToday(toDate(taskDate))
-    })
+  todayTasks() {
+    return this.tasks.filter((task) => {
+      const f = task.getFormattedDate();
+      const taskDate = new Date(`${f.month}/${f.day}/${f.year}`);
+      return isToday(toDate(taskDate));
+    });
   }
 
-  thisWeekTasks(){
-    return this.tasks.filter(task=>{
-      const f = task.getFormattedDate()
-      const taskDate = new Date(`${f.month}/${f.day}/${f.year}`)
+  thisWeekTasks() {
+    return this.tasks.filter((task) => {
+      const f = task.getFormattedDate();
+      const taskDate = new Date(`${f.month}/${f.day}/${f.year}`);
       return isThisWeek(subDays(toDate(taskDate), 1));
-    })
+    });
   }
-
 }

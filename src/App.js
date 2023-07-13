@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
+import { el } from "date-fns/locale";
 
 const todoBack = Storage.getTodoBack();
 
@@ -12,16 +13,28 @@ function Header() {
   );
 }
 
-function Sidebar({ source, setSource }) {
+function Sidebar({ currentProject, setCurrentProject }) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
   const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
 
   return (
     <div className="sidebar">
       <div className="menu">
-        <Project setSource={setSource} name={"Inbox"} source={source} />
-        <Project setSource={setSource} name={"Today"} source={source} />
-        <Project setSource={setSource} name={"This week"} source={source} />
+        <Project
+          setCurrentProject={setCurrentProject}
+          name={"Inbox"}
+          currentProject={currentProject}
+        />
+        <Project
+          setCurrentProject={setCurrentProject}
+          name={"Today"}
+          currentProject={currentProject}
+        />
+        <Project
+          setCurrentProject={setCurrentProject}
+          name={"This week"}
+          currentProject={currentProject}
+        />
       </div>
       <div className="projects">
         <h3>Projects</h3>
@@ -31,8 +44,8 @@ function Sidebar({ source, setSource }) {
               <Project
                 key={project.uid}
                 name={project.name}
-                source={source}
-                setSource={setSource}
+                currentProject={currentProject}
+                setCurrentProject={setCurrentProject}
                 setUserProjects={setUserProjects}
               />
             );
@@ -53,23 +66,28 @@ function Sidebar({ source, setSource }) {
   );
 }
 
-function Main({ source }) {
+function Main({ currentProject, setCurrentProject }) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
-  const [tasks, setTasks] = useState({});
-  console.log(source.name);
+  const [tasks, setTasks] = useState(currentProject.tasks);
+  console.log(currentProject.tasks);
 
   return (
     <div className="main-container">
-      <Title text={source.name} />
+      <Title text={currentProject.name} />
       <div className="task-list" id="task-list">
-        <Task name={"My 1st task"} clicked={true} />
+        {/* <Task name={"My 1st task"} clicked={true} />
         <Task name={"My 2nd task"} clicked={false} />
-        <Task name={"My 3rd task"} clicked={false} />
+        <Task name={"My 3rd task"} clicked={false} /> */}
       </div>
-      {source.name === "Today" || source.name === "This week" ? null : (
+      {currentProject.name === "Today" ||
+      currentProject.name === "This week" ? null : (
         <div className="task-menu">
           {showTaskPopup ? (
-            <AddTaskPopup setshowTaskPopup={setshowTaskPopup} source={source} />
+            <AddTaskPopup
+              setshowTaskPopup={setshowTaskPopup}
+              currentProject={currentProject}
+              setCurrentProject={setCurrentProject}
+            />
           ) : (
             <AddTask setshowTaskPopup={setshowTaskPopup} />
           )}
@@ -163,8 +181,9 @@ function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
   );
 }
 
-function Project({ name, source, setSource, setUserProjects }) {
-  const setActive = () => (source && source.name === name ? "on-active" : "");
+function Project({ name, currentProject, setCurrentProject, setUserProjects }) {
+  const setActive = () =>
+    currentProject && currentProject.name === name ? "on-active" : "";
 
   const onProjectClick = (e) => {
     if (e.target.id === "x") return;
@@ -196,12 +215,12 @@ function Project({ name, source, setSource, setUserProjects }) {
       thisWeek.setTasks(temp);
     }
 
-    setSource(todoBack.getProject(projectName));
+    setCurrentProject(todoBack.getProject(projectName));
   };
 
   const removeProject = (e) => {
-    const project = todoBack.getProject(e.target.previousSibling.textContent)
-    todoBack.deleteProject(project.uid)
+    const project = todoBack.getProject(e.target.previousSibling.textContent);
+    todoBack.deleteProject(project.uid);
     setUserProjects(todoBack.getUserProjects());
 
     Storage.saveTodoBack(todoBack);
@@ -239,14 +258,14 @@ function Title({ text }) {
   return <h3 className="main-title">{text}</h3>;
 }
 
-function Task({ name, clicked, uid }) {
+function Task({ name, completed, uid }) {
   const lineTrough = () => {
-    return clicked ? { textDecoration: "line-through" } : null;
+    return completed ? { textDecoration: "line-through" } : null;
   };
 
   return (
     <div className="task" dataset-uid={uid}>
-      <div className="complete" id={clicked ? "o-clicked" : "o"}></div>
+      <div className="complete" id={completed ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
         {name}
       </div>
@@ -269,12 +288,12 @@ function AddTask({ setshowTaskPopup }) {
   );
 }
 
-function AddTaskPopup({ setshowTaskPopup, source }) {
+function AddTaskPopup({ setshowTaskPopup, currentProject, setCurrentProject }) {
   const [error, setError] = useState(null);
   const [todo, setTodo] = useState({
     title: "",
     date: "",
-    source: source.name,
+    currentProject: currentProject.name,
   });
 
   const handleChange = (e) => {
@@ -282,16 +301,32 @@ function AddTaskPopup({ setshowTaskPopup, source }) {
     setTodo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addTask = () => {
+  const _addTask = () => {
     if (!todo.title || !todo.date) {
       setError("Error! You must fill all the fields properly!");
       setTimeout(() => setError(null), 2000);
       return;
     }
-    console.log("Add task clicked");
+
+    currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
+    setCurrentProject(currentProject);
     setError(`Task: "${todo.title}". Expiration date: ${todo.date}`);
     setTimeout(() => setError(null), 4000);
-    console.log(source);
+    console.log(currentProject);
+  };
+
+  const addTask = () => {
+    try {
+      currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
+      setCurrentProject(currentProject);
+      setError(`Task: "${todo.title}". Expiration date: ${todo.date}`);
+    } catch (error) {
+      if(error.message==='empty') setError("Error! You must fill all the fields properly!");
+      else if(error.message === 'exists') setError(`Error! Task "${todo.title}" already exist!`)
+    }
+    setTimeout(() => setError(null), 4000);
+    console.log(currentProject);
+    console.log(todoBack.projects)
   };
 
   return (
@@ -353,8 +388,14 @@ function App() {
   return (
     <>
       <Header />
-      <Sidebar source={currentProject} setSource={setCurrentProject} />
-      <Main source={currentProject} />
+      <Sidebar
+        currentProject={currentProject}
+        setCurrentProject={setCurrentProject}
+      />
+      <Main
+        currentProject={currentProject}
+        setCurrentProject={setCurrentProject}
+      />
       <Footer />
     </>
   );
