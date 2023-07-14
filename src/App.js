@@ -71,14 +71,20 @@ function Sidebar({ currentProject, setCurrentProject, setTasks }) {
 
 function Main({ tasks, setTasks, currentProject, setCurrentProject }) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
-  
 
   return (
     <div className="main-container">
       <Title text={currentProject.name} />
       <div className="task-list" id="task-list">
         {tasks.map((task) => {
-          return <Task task={task} key={task.uid} />;
+          return (
+            <Task
+              task={task}
+              key={task.uid}
+              currentProject={currentProject}
+              setTasks={setTasks}
+            />
+          );
         })}
       </div>
       {currentProject.name === "Today" ||
@@ -117,24 +123,23 @@ function AddProject({ setShowProjectPopup }) {
 }
 
 function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
-  const blankUserProject = { name: "" };
-  const [userProject, setUserProject] = useState(blankUserProject);
+  const cleanUserProject = { name: "" };
+  const [userProject, setUserProject] = useState(cleanUserProject);
   const [error, setError] = useState(null);
 
   const addProjectHandler = () => {
     try {
       todoBack.addUserProject(userProject.name);
       setUserProjects(todoBack.getUserProjects());
-      setUserProject(blankUserProject);
       setError(`"${userProject.name}" added!`);
-
       Storage.saveTodoBack(todoBack);
     } catch (error) {
       if (error.message === "empty")
         setError("Error! Fill project name field!");
       else if (error.message === "exists")
-        setError("Error! Project already exists!");
+        setError(`Error! Project ${userProject.name} already exists!`);
     }
+    setUserProject(cleanUserProject);
     setTimeout(() => setError(null), 2000);
     console.log("Add project clicked");
   };
@@ -184,52 +189,98 @@ function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
   );
 }
 
-function Project({ name, currentProject, setCurrentProject, setUserProjects, setTasks }) {
+function Project({
+  name,
+  currentProject,
+  setCurrentProject,
+  setUserProjects,
+  setTasks,
+}) {
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
+
+  const renderDataFilter = (projectName) =>{
+     if (projectName === "Today") {
+       let todayTasks = [];
+       for (let project of todoBack.projects) {
+         project.sortByCompleted();
+         if (project.getName() === "Today" || project.getName() === "This week")
+           continue;
+         todayTasks.push(project.todayTasks());
+       }
+       todayTasks = temp.flat();
+       return todayTasks;
+     }
+
+     if (projectName === "This week") {
+       let thisWeekTasks = [];
+       for (let project of todoBack.projects) {
+         project.sortByCompleted();
+         if (project.getName() === "Today" || project.getName() === "This week")
+           continue;
+         thisWeekTasks.push(project.thisWeekTasks());
+       }
+       thisWeekTasks = temp.flat();
+       return thisWeekTasks;
+     }
+
+    //  return todoBack.getProject(projectName)
+    //    ? todoBack.getProject(projectName).tasks
+    //    : todoBack.getProject('Inbox').tasks;
+    return todoBack.getProject(projectName).tasks;
+  }
 
   const onProjectClick = (e) => {
     if (e.target.id === "x") return;
     const projectName = e.currentTarget.querySelector("div").textContent;
 
-    if (projectName === "Today") {
-      const today = todoBack.getProject(projectName);
-      let temp = [];
-      for (let project of todoBack.projects) {
-        project.sortByCompleted();
-        if (project.getName() === "Today" || project.getName() === "This week")
-          continue;
-        temp.push(project.todayTasks());
-      }
-      temp = temp.flat();
-      today.setTasks(temp);
-      setTasks(temp)
-    }
+    // if (projectName === "Today") {
+    //   const today = todoBack.getProject(projectName);
+    //   let temp = [];
+    //   for (let project of todoBack.projects) {
+    //     project.sortByCompleted();
+    //     if (project.getName() === "Today" || project.getName() === "This week")
+    //       continue;
+    //     temp.push(project.todayTasks());
+    //   }
+    //   temp = temp.flat();
+    //   today.setTasks(temp);
+    //   setTasks(temp);
+    // }
 
-    if (projectName === "This week") {
-      const thisWeek = todoBack.getProject(projectName);
-      let temp = [];
-      for (let project of todoBack.projects) {
-        project.sortByCompleted();
-        if (project.getName() === "Today" || project.getName() === "This week")
-          continue;
-        temp.push(project.thisWeekTasks());
-      }
-      temp = temp.flat();
-      thisWeek.setTasks(temp);
-      setTasks(temp);
-    }
+    // if (projectName === "This week") {
+    //   const thisWeek = todoBack.getProject(projectName);
+    //   let temp = [];
+    //   for (let project of todoBack.projects) {
+    //     project.sortByCompleted();
+    //     if (project.getName() === "Today" || project.getName() === "This week")
+    //       continue;
+    //     temp.push(project.thisWeekTasks());
+    //   }
+    //   temp = temp.flat();
+    //   thisWeek.setTasks(temp);
+    //   setTasks(temp);
+    // }
 
+    
+    //setTasks(todoBack.getProject(projectName).tasks);
+
+    setTasks(renderDataFilter(projectName));
     setCurrentProject(todoBack.getProject(projectName));
-    setTasks(todoBack.getProject(projectName).tasks);
   };
 
   const removeProject = (e) => {
     const project = todoBack.getProject(e.target.previousSibling.textContent);
     todoBack.deleteProject(project.uid);
     setUserProjects(todoBack.getUserProjects());
-
     Storage.saveTodoBack(todoBack);
+
+    if (currentProject.name === project.name) {
+      setCurrentProject(todoBack.getProject("Inbox"));
+    }
+    //setTasks(todoBack.getProject(currentProject.name).tasks);
+    setTasks(renderDataFilter(currentProject.name));
+    
   };
 
   if (name === "Inbox" || name === "Today" || name === "This week") {
@@ -264,23 +315,31 @@ function Title({ text }) {
   return <h3 className="main-title">{text}</h3>;
 }
 
-function Task({ task }) {
+function Task({ task, currentProject, setTasks }) {
   const lineTrough = () => {
-    return task.completed ? { textDecoration: "line-through" } : null;
+    return task.completed
+      ? { textDecoration: "line-through", color: "grey" }
+      : null;
   };
 
   return (
     <div className="task" dataset-uid={task.uid}>
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
-        {task.title}
+        {currentProject.name === "This week" || currentProject.name === "Today"
+          ? `${task.title} (${task.source})`
+          : task.title}
       </div>
       <input type="text" className="task-name-input deactive" />
       <div className="task-date active" style={lineTrough()}>
         {task.getDueDate()}
       </div>
       <input type="date" className="task-date-input deactive" />
-      <div className="close" id="x"></div>
+      <div
+        className="close"
+        onClick={() => console.log("Remove task!")}
+        id="x"
+      ></div>
     </div>
   );
 }
@@ -295,36 +354,42 @@ function AddTask({ setshowTaskPopup }) {
 }
 
 function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
-  const [error, setError] = useState(null);
-  const [todo, setTodo] = useState({
+  const cleanTodo = {
     title: "",
     date: "",
-    currentProject: currentProject.name,
-  });
+  };
+  const [error, setError] = useState(null);
+  const [todo, setTodo] = useState(cleanTodo);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTodo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const formatDate = (date) =>{
-    let temp = date.split('-');
-    return `${temp[2]}/${temp[1]}/${temp[0]}`
-  }
+  const formatDate = (date) => {
+    let temp = date.split("-");
+    return `${temp[2]}/${temp[1]}/${temp[0]}`;
+  };
 
   const addTask = () => {
     try {
-      currentProject.addUserTask(todo.title, todo.date, todo.currentProject);
+      currentProject.addUserTask(todo.title, todo.date, currentProject.name);
       setTasks([...currentProject.tasks]);
-      setError(`Task: "${todo.title}" added. Expiration date: ${formatDate(todo.date)}`);
-      Storage.saveTodoBack(todoBack)
+      setError(
+        `Task: "${todo.title}" added. Expiration date: ${formatDate(todo.date)}`
+      );
+      Storage.saveTodoBack(todoBack);
     } catch (error) {
-      if (error.message === "empty")
+      if (error.message === "empty") {
         setError("Error! You must fill all the fields properly!");
-      else if (error.message === "exists")
+      } else if (error.message === "exists") {
         setError(`Error! Task "${todo.title}" already exist!`);
+      }
     }
-    setTimeout(() => setError(null), 4000);
+    setTodo(cleanTodo);
+    setTimeout(() => {
+      setError(null);
+    }, 2000);
   };
 
   return (
@@ -384,7 +449,7 @@ function App() {
   );
   const [tasks, setTasks] = useState([...currentProject.tasks]);
 
-  console.log(currentProject)
+  console.log(currentProject);
   return (
     <>
       <Header />
@@ -394,8 +459,8 @@ function App() {
         setTasks={setTasks}
       />
       <Main
-        tasks = {tasks}
-        setTasks = {setTasks}
+        tasks={tasks}
+        setTasks={setTasks}
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
       />
