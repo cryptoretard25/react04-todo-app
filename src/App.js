@@ -208,7 +208,7 @@ function Project({
            continue;
          todayTasks.push(project.todayTasks());
        }
-       todayTasks = temp.flat();
+       todayTasks = todayTasks.flat();
        return todayTasks;
      }
 
@@ -220,13 +220,9 @@ function Project({
            continue;
          thisWeekTasks.push(project.thisWeekTasks());
        }
-       thisWeekTasks = temp.flat();
+       thisWeekTasks = thisWeekTasks.flat();
        return thisWeekTasks;
      }
-
-    //  return todoBack.getProject(projectName)
-    //    ? todoBack.getProject(projectName).tasks
-    //    : todoBack.getProject('Inbox').tasks;
     return todoBack.getProject(projectName).tasks;
   }
 
@@ -277,6 +273,8 @@ function Project({
 
     if (currentProject.name === project.name) {
       setCurrentProject(todoBack.getProject("Inbox"));
+      setTasks(renderDataFilter('Inbox'));
+      return
     }
     //setTasks(todoBack.getProject(currentProject.name).tasks);
     setTasks(renderDataFilter(currentProject.name));
