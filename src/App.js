@@ -88,7 +88,21 @@ function Main({ tasks, setTasks, currentProject, setCurrentProject }) {
         })}
       </div>
       {currentProject.name === "Today" ||
-      currentProject.name === "This week" ? null : (
+      currentProject.name === "This week" ? null : currentProject.name ===
+        "Inbox" ? (
+        <div className="task-menu">
+          {showTaskPopup ? (
+            <InboxAddTaskPopup
+              setshowTaskPopup={setshowTaskPopup}
+              currentProject={currentProject}
+              setCurrentProject={setCurrentProject}
+              setTasks={setTasks}
+            />
+          ) : (
+            <AddTask setshowTaskPopup={setshowTaskPopup} />
+          )}
+        </div>
+      ) : (
         <div className="task-menu">
           {showTaskPopup ? (
             <AddTaskPopup
@@ -199,81 +213,23 @@ function Project({
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
 
-  const _renderDataFilter = (projectName) =>{
-     if (projectName === "Today") {
-       let todayTasks = [];
-       for (let project of todoBack.projects) {
-         project.sortByCompleted();
-         if (project.getName() === "Today" || project.getName() === "This week")
-           continue;
-         todayTasks.push(project.todayTasks());
-       }
-       todayTasks = todayTasks.flat();
-       return todayTasks;
-     }
-
-     if (projectName === "This week") {
-       let thisWeekTasks = [];
-       for (let project of todoBack.projects) {
-         project.sortByCompleted();
-         if (project.getName() === "Today" || project.getName() === "This week")
-           continue;
-         thisWeekTasks.push(project.thisWeekTasks());
-       }
-       thisWeekTasks = thisWeekTasks.flat();
-       return thisWeekTasks;
-     }
+  const renderDataFilter = (projectName) => {
+    if (projectName === "Inbox") {
+      return todoBack.getAllUserProjectTasks();
+    }
+    if (projectName === "Today") {
+      return todoBack.getUserProjectsTodayTasks();
+    }
+    if (projectName === "This week") {
+      return todoBack.getUserProjectsThisWeekTasks();
+    }
     return todoBack.getProject(projectName).tasks;
-  }
-
-    const renderDataFilter = (projectName) => {
-      if(projectName === 'Inbox'){
-        return todoBack.getAllUserProjectTasks();
-      }
-      if (projectName === "Today") {
-        return todoBack.getUserProjectsTodayTasks();
-      }
-      if (projectName === "This week") {
-        return todoBack.getUserProjectsThisWeekTasks();
-      }
-      return todoBack.getProject(projectName).tasks;
-    };
+  };
 
   const onProjectClick = (e) => {
     if (e.target.id === "x") return;
     const projectName = e.currentTarget.querySelector("div").textContent;
-
-    // if (projectName === "Today") {
-    //   const today = todoBack.getProject(projectName);
-    //   let temp = [];
-    //   for (let project of todoBack.projects) {
-    //     project.sortByCompleted();
-    //     if (project.getName() === "Today" || project.getName() === "This week")
-    //       continue;
-    //     temp.push(project.todayTasks());
-    //   }
-    //   temp = temp.flat();
-    //   today.setTasks(temp);
-    //   setTasks(temp);
-    // }
-
-    // if (projectName === "This week") {
-    //   const thisWeek = todoBack.getProject(projectName);
-    //   let temp = [];
-    //   for (let project of todoBack.projects) {
-    //     project.sortByCompleted();
-    //     if (project.getName() === "Today" || project.getName() === "This week")
-    //       continue;
-    //     temp.push(project.thisWeekTasks());
-    //   }
-    //   temp = temp.flat();
-    //   thisWeek.setTasks(temp);
-    //   setTasks(temp);
-    // }
-
     
-    //setTasks(todoBack.getProject(projectName).tasks);
-
     setTasks(renderDataFilter(projectName));
     setCurrentProject(todoBack.getProject(projectName));
   };
@@ -286,12 +242,10 @@ function Project({
 
     if (currentProject.name === project.name) {
       setCurrentProject(todoBack.getProject("Inbox"));
-      setTasks(renderDataFilter('Inbox'));
-      return
+      setTasks(renderDataFilter("Inbox"));
+      return;
     }
-    //setTasks(todoBack.getProject(currentProject.name).tasks);
     setTasks(renderDataFilter(currentProject.name));
-    
   };
 
   if (name === "Inbox" || name === "Today" || name === "This week") {
@@ -337,7 +291,7 @@ function Task({ task, currentProject, setTasks }) {
     <div className="task" dataset-uid={task.uid}>
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
-        {currentProject.name === "This week" || currentProject.name === "Today"
+        {currentProject.name === "This week" || currentProject.name === "Today" || 'Inbox'
           ? `${task.title} (${task.source})`
           : task.title}
       </div>
@@ -419,22 +373,132 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
         {error}
       </div>
       <div className="task-container">
-        <input
-          name="title"
-          type="text"
-          className="popup-menu-input"
-          id="input-add-task-popup"
-          placeholder="Task description"
-          onChange={handleChange}
-          value={todo.title}
-        />
-        <input
-          name="date"
-          className="task-date-input active"
-          type="date"
-          onChange={handleChange}
-          value={todo.date}
-        />
+        <div className="input-wrapper name">
+          <label htmlFor="input-add-task-popup">Task description:</label>
+          <input
+            name="title"
+            type="text"
+            className="popup-menu-input"
+            id="input-add-task-popup"
+            onChange={handleChange}
+            value={todo.title}
+          />
+        </div>
+        <div className="input-wrapper">
+          <label htmlFor="choose-date">Date:</label>
+          <input
+            name="date"
+            id="choose-date"
+            className="task-date-input active"
+            type="date"
+            onChange={handleChange}
+            value={todo.date}
+          />
+        </div>
+      </div>
+      <div className="popup-buttons">
+        <button
+          className="button-add popup-button task-popup-button-add"
+          onClick={addTask}
+        >
+          Add
+        </button>
+        <button
+          className="button-cancel popup-button task-popup-button-cancel"
+          onClick={() => setshowTaskPopup(false)}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function InboxAddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
+  const cleanTodo = {
+    title: "",
+    date: "",
+  };
+  const [error, setError] = useState(null);
+  const [todo, setTodo] = useState(cleanTodo);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTodo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const formatDate = (date) => {
+    let temp = date.split("-");
+    return `${temp[2]}/${temp[1]}/${temp[0]}`;
+  };
+
+  const addTask = () => {
+    try {
+      currentProject.addUserTask(todo.title, todo.date, currentProject.name);
+      setTasks([...currentProject.tasks]);
+      setError(
+        `Task: "${todo.title}" added. Expiration date: ${formatDate(todo.date)}`
+      );
+      Storage.saveTodoBack(todoBack);
+    } catch (error) {
+      if (error.message === "empty") {
+        setError("Error! You must fill all the fields properly!");
+      } else if (error.message === "exists") {
+        setError(`Error! Task "${todo.title}" already exist!`);
+      }
+    }
+    setTodo(cleanTodo);
+    setTimeout(() => {
+      setError(null);
+    }, 2000);
+  };
+
+  return (
+    <div
+      className="popup-menu popup-menu-task add-task-popup"
+      id="add-task-popup"
+    >
+      <div
+        className="error-div"
+        style={
+          error && error.includes("Error!")
+            ? { color: "red" }
+            : { color: "black" }
+        }
+      >
+        {error}
+      </div>
+      <div className="task-container">
+        <div className="input-wrapper">
+          <label htmlFor="choose-project">Project:</label>
+          <select className="project-dropdown" id="choose-project">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+          </select>
+        </div>
+        <div className="input-wrapper name">
+          <label htmlFor="input-add-task-popup">Task description:</label>
+          <input
+            name="title"
+            type="text"
+            className="popup-menu-input"
+            id="input-add-task-popup"
+            onChange={handleChange}
+            value={todo.title}
+          />
+        </div>
+        <div className="input-wrapper">
+          <label htmlFor="choose-date">Date:</label>
+          <input
+            name="date"
+            className="task-date-input active"
+            type="date"
+            onChange={handleChange}
+            value={todo.date}
+            id="choose-date"
+          />
+        </div>
       </div>
       <div className="popup-buttons">
         <button
@@ -458,7 +522,7 @@ function App() {
   const [currentProject, setCurrentProject] = useState(
     todoBack.getProject("Inbox")
   );
-  const [tasks, setTasks] = useState([...currentProject.tasks]);
+  const [tasks, setTasks] = useState(todoBack.getAllUserProjectTasks());
 
   console.log(currentProject);
   return (

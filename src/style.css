@@ -57,7 +57,7 @@ body {
   min-height: 100vh;
   display: grid;
   grid-template-rows: 10rem 1fr 5rem;
-  grid-template-columns: minmax(25rem, 1fr) minmax(50rem, 5fr);
+  grid-template-columns: minmax(25rem, 1fr) minmax(55rem, 5fr);
   background-color: var(--stale-100);
 }
 
@@ -260,6 +260,28 @@ h3 {
   height: 2.5rem;
 }
 
+.project-dropdown{
+  font-size: 1.6rem;
+  border: 2px solid var(--stale-400);
+  border-radius: 5px;
+  padding: 4px;
+  color: grey;
+}
+
+.input-wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-wrapper.name{
+  flex: 1;
+}
+
+.project-dropdown:focus{
+  outline: none;
+}
+
 button:not(.project):active{
   transform: scale(0.98);
 }
@@ -284,8 +306,7 @@ button:not(.project):active{
 .popup-menu {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
- 
+  -gap: 1.5rem;
 }
 
 .error-div{
@@ -334,6 +355,7 @@ button:not(.project):active{
 }
 
 .task-container {
+  margin: 1rem 0 2rem 0;
   padding: 0 1rem;
   display: flex;
   gap: 1.5rem;
