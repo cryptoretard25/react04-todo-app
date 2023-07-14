@@ -21,6 +21,33 @@ export default class TodoBackEnd {
     );
   }
 
+  getAllUserProjectTasks(){
+    const userProjects =this.getUserProjects();
+    const allTasks = [];
+    for(const project of userProjects){
+      allTasks.push(project.tasks)
+    }
+    return allTasks.flat();
+  }
+
+  getUserProjectsTodayTasks() {
+    const userProjects = this.getUserProjects();
+    const todayTasks = [];
+    for (const project of userProjects) {
+      todayTasks.push(project.todayTasks());
+    }
+    return todayTasks.flat();
+  }
+
+  getUserProjectsThisWeekTasks() {
+    const userProjects = this.getUserProjects();
+    const thisWeekTasks = [];
+    for (const project of userProjects) {
+      thisWeekTasks.push(project.thisWeekTasks());
+    }
+    return thisWeekTasks.flat();
+  }
+
   getProjects() {
     return this.projects;
   }
@@ -43,10 +70,15 @@ export default class TodoBackEnd {
     this.projects.push(newProject);
   }
 
-  addUserProject(name){
-    if (!name) throw new Error('empty')
-    if (this.projects.find((project)=> project.name.toLowerCase() === name.toLowerCase())) throw Error("exists");
-    this.projects.push(new Project(name))
+  addUserProject(name) {
+    if (!name) throw new Error("empty");
+    if (
+      this.projects.find(
+        (project) => project.name.toLowerCase() === name.toLowerCase()
+      )
+    )
+      throw Error("exists");
+    this.projects.push(new Project(name));
   }
 
   deleteProject(uid) {

@@ -199,7 +199,7 @@ function Project({
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
 
-  const renderDataFilter = (projectName) =>{
+  const _renderDataFilter = (projectName) =>{
      if (projectName === "Today") {
        let todayTasks = [];
        for (let project of todoBack.projects) {
@@ -225,6 +225,19 @@ function Project({
      }
     return todoBack.getProject(projectName).tasks;
   }
+
+    const renderDataFilter = (projectName) => {
+      if(projectName === 'Inbox'){
+        return todoBack.getAllUserProjectTasks();
+      }
+      if (projectName === "Today") {
+        return todoBack.getUserProjectsTodayTasks();
+      }
+      if (projectName === "This week") {
+        return todoBack.getUserProjectsThisWeekTasks();
+      }
+      return todoBack.getProject(projectName).tasks;
+    };
 
   const onProjectClick = (e) => {
     if (e.target.id === "x") return;
