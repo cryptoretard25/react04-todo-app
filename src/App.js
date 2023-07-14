@@ -12,9 +12,14 @@ function Header() {
   );
 }
 
-function Sidebar({ currentProject, setCurrentProject, setTasks }) {
+function Sidebar({
+  userProjects,
+  setUserProjects,
+  currentProject,
+  setCurrentProject,
+  setTasks,
+}) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
-  const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
 
   return (
     <div className="sidebar">
@@ -69,8 +74,9 @@ function Sidebar({ currentProject, setCurrentProject, setTasks }) {
   );
 }
 
-function Main({ tasks, setTasks, currentProject, setCurrentProject }) {
+function Main({ tasks, setTasks, currentProject, setCurrentProject, userProjects }) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
+  const sources = userProjects.map(project=> project.name)
 
   return (
     <div className="main-container">
@@ -97,6 +103,7 @@ function Main({ tasks, setTasks, currentProject, setCurrentProject }) {
               currentProject={currentProject}
               setCurrentProject={setCurrentProject}
               setTasks={setTasks}
+              taskSources={sources}
             />
           ) : (
             <AddTask setshowTaskPopup={setshowTaskPopup} />
@@ -229,7 +236,7 @@ function Project({
   const onProjectClick = (e) => {
     if (e.target.id === "x") return;
     const projectName = e.currentTarget.querySelector("div").textContent;
-    
+
     setTasks(renderDataFilter(projectName));
     setCurrentProject(todoBack.getProject(projectName));
   };
@@ -291,7 +298,9 @@ function Task({ task, currentProject, setTasks }) {
     <div className="task" dataset-uid={task.uid}>
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
-        {currentProject.name === "This week" || currentProject.name === "Today" || 'Inbox'
+        {currentProject.name === "This week" ||
+        currentProject.name === "Today" ||
+        "Inbox"
           ? `${task.title} (${task.source})`
           : task.title}
       </div>
@@ -414,7 +423,12 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
   );
 }
 
-function InboxAddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
+function InboxAddTaskPopup({
+  setshowTaskPopup,
+  currentProject,
+  setTasks,
+  taskSources,
+}) {
   const cleanTodo = {
     title: "",
     date: "",
@@ -472,9 +486,16 @@ function InboxAddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
         <div className="input-wrapper">
           <label htmlFor="choose-project">Project:</label>
           <select className="project-dropdown" id="choose-project">
-            <option value="option1">Option 1</option>
+            {taskSources.map((source, index) => {
+              return (
+                <option key={index} value={source}>
+                  {source}
+                </option>
+              );
+            })}
+            {/* <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="option3">Option 3</option> */}
           </select>
         </div>
         <div className="input-wrapper name">
@@ -523,12 +544,15 @@ function App() {
     todoBack.getProject("Inbox")
   );
   const [tasks, setTasks] = useState(todoBack.getAllUserProjectTasks());
+  const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
 
   console.log(currentProject);
   return (
     <>
       <Header />
       <Sidebar
+        userProjects={userProjects}
+        setUserProjects={setUserProjects}
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
         setTasks={setTasks}
@@ -538,6 +562,7 @@ function App() {
         setTasks={setTasks}
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
+        userProjects={userProjects}
       />
       <Footer />
     </>

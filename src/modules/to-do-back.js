@@ -12,6 +12,14 @@ export default class TodoBackEnd {
     this.projects = projects;
   }
 
+  getAllProjectNames(userProjects){
+    const names = [];
+    for(const project of userProjects){
+      names.push(project.name)
+    }
+    return names
+  }
+
   getUserProjects() {
     return this.projects.filter(
       (project) =>
