@@ -124,6 +124,7 @@ h3 {
 
 .task,
 .project {
+  height: 3.2rem;
   padding: 5px;
   display: flex;
   align-items: center;

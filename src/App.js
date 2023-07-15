@@ -304,7 +304,7 @@ function Project({
   }
 }
 
-function Title({ text, tasks, setTasks, sortBy, setSortBy }) {
+function Title({ text, sortBy, setSortBy }) {
   const handleChange = (e) => {
     setSortBy(e.target.value);
   };
@@ -329,26 +329,49 @@ function Title({ text, tasks, setTasks, sortBy, setSortBy }) {
 }
 
 function Task({ task, currentProject }) {
+  const [edit, setEdit] = useState({ description: false, date: false });
+
+  //console.log(task)
+
   const lineTrough = () => {
     return task.completed
       ? { textDecoration: "line-through", color: "grey" }
       : null;
   };
+
+  const onDescriptionClickHandle = (e) => {
+    if (e.target.className === "task") return;
+    const currProject = todoBack.getProject(task.source);
+    const currTask = currProject.getTaskByUID(task.uid);
+    console.log(currProject, currTask);
+
+    setEdit({ description: true, date: false });
+  };
+
   return (
     <div className="task" dataset-uid={task.uid}>
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
-      <div className="task-name active" style={lineTrough()}>
-        {
-        currentProject.name === "This week" ||
-        currentProject.name === "Today" ||
-        currentProject.name === "Inbox"
-          ? `${task.title} (${task.source})`
-          : task.title}
-      </div>
-      <input type="text" className="task-name-input deactive" />
-      <div className="task-date active" style={lineTrough()}>
-        {task.getDueDate()}
-      </div>
+      {!edit.description ? (
+        <div
+          className="task-name"
+          style={lineTrough()}
+          onClick={onDescriptionClickHandle}
+        >
+          {currentProject.name === "This week" ||
+          currentProject.name === "Today" ||
+          currentProject.name === "Inbox"
+            ? `${task.title} (${task.source})`
+            : task.title}
+        </div>
+      ) : (
+        <input className="task-name-input"></input>
+      )}
+
+      {!edit.date ? (
+        <div className="task-date active" style={lineTrough()}>
+          {task.getDueDate()}
+        </div>
+      ) : null}
       <input type="date" className="task-date-input deactive" />
       <div
         className="close"
