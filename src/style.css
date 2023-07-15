@@ -149,6 +149,10 @@ h3 {
 }
 
 .task-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10rem;
   cursor: pointer;
 }
 
@@ -398,10 +402,11 @@ button:not(.project):active{
 
 .task-date-input {
   font-family: var(--main-font);
-  font-size: 1.6rem;
-  border: 2px solid var(--stale-400);
+  font-size: 1.5rem;
+  border: 1px solid var(--stale-400);
   border-radius: 5px;
   padding: 2px;
+  width: 10rem;
 }
 .task-date-input:focus{
   outline: none;

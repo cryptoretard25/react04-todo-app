@@ -110,6 +110,22 @@ export default class TodoBackEnd {
       return [...tasks].sort((a, b) => a.title.localeCompare(b.title));
     else if (val === "Project")
       return [...tasks].sort((a, b) => a.source.localeCompare(b.source));
+    const cases = {
+
+    }
+  };
+
+    renderDataFilter (projectName){
+    if (projectName === "Inbox") {
+      return this.getAllUserProjectTasks();
+    }
+    if (projectName === "Today") {
+      return this.getUserProjectsTodayTasks();
+    }
+    if (projectName === "This week") {
+      return this.getUserProjectsThisWeekTasks();
+    }
+    return this.getProject(projectName).tasks;
   };
 
 }

@@ -107,7 +107,7 @@ function Main({
               task={task}
               key={task.uid}
               currentProject={currentProject}
-              sortBy={sortBy}
+              setTasks={setTasks}
             />
           );
         })}
@@ -240,24 +240,24 @@ function Project({
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
 
-  const renderDataFilter = (projectName) => {
-    if (projectName === "Inbox") {
-      return todoBack.getAllUserProjectTasks();
-    }
-    if (projectName === "Today") {
-      return todoBack.getUserProjectsTodayTasks();
-    }
-    if (projectName === "This week") {
-      return todoBack.getUserProjectsThisWeekTasks();
-    }
-    return todoBack.getProject(projectName).tasks;
-  };
+  // const renderDataFilter = (projectName) => {
+  //   if (projectName === "Inbox") {
+  //     return todoBack.getAllUserProjectTasks();
+  //   }
+  //   if (projectName === "Today") {
+  //     return todoBack.getUserProjectsTodayTasks();
+  //   }
+  //   if (projectName === "This week") {
+  //     return todoBack.getUserProjectsThisWeekTasks();
+  //   }
+  //   return todoBack.getProject(projectName).tasks;
+  // };
 
   const onProjectClick = (e) => {
     if (e.target.id === "x") return;
     const projectName = e.currentTarget.querySelector("div").textContent;
 
-    setTasks(renderDataFilter(projectName));
+    setTasks(todoBack.renderDataFilter(projectName));
     setSortBy("Project");
     setCurrentProject(todoBack.getProject(projectName));
   };
@@ -270,10 +270,10 @@ function Project({
 
     if (currentProject.name === project.name) {
       setCurrentProject(todoBack.getProject("Inbox"));
-      setTasks(renderDataFilter("Inbox"));
+      setTasks(todoBack.renderDataFilter("Inbox"));
       return;
     }
-    setTasks(renderDataFilter(currentProject.name));
+    setTasks(todoBack.renderDataFilter(currentProject.name));
   };
 
   if (name === "Inbox" || name === "Today" || name === "This week") {
@@ -328,8 +328,10 @@ function Title({ text, sortBy, setSortBy }) {
   );
 }
 
-function Task({ task, currentProject }) {
+function Task({ task, currentProject, setTasks }) {
   const [edit, setEdit] = useState({ description: false, date: false });
+  const currProject = todoBack.getProject(task.source);
+  const currTask = currProject.getTaskByUID(task.uid);
 
   //console.log(task)
 
@@ -341,16 +343,23 @@ function Task({ task, currentProject }) {
 
   const onDescriptionClickHandle = (e) => {
     if (e.target.className === "task") return;
-    const currProject = todoBack.getProject(task.source);
-    const currTask = currProject.getTaskByUID(task.uid);
-    console.log(currProject, currTask);
 
-    setEdit({ description: true, date: false });
+    //console.log(currProject, currTask);
+    //currTask.title = "Edited";
+    setEdit((prev) => ({ ...prev, description: true }));
+    setTasks([...todoBack.renderDataFilter(currentProject.name)])
+  };
+
+  const onDateClickHandle = (e) => {
+    if (e.target.className === "task") return;
+
+    setEdit((prev) => ({ ...prev, date: true }));
   };
 
   return (
-    <div className="task" dataset-uid={task.uid}>
+    <div className="task">
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
+
       {!edit.description ? (
         <div
           className="task-name"
@@ -368,11 +377,17 @@ function Task({ task, currentProject }) {
       )}
 
       {!edit.date ? (
-        <div className="task-date active" style={lineTrough()}>
+        <div
+          className="task-date"
+          style={lineTrough()}
+          onClick={onDateClickHandle}
+        >
           {task.getDueDate()}
         </div>
-      ) : null}
-      <input type="date" className="task-date-input deactive" />
+      ) : (
+        <input type="date" className="task-date-input" />
+      )}
+
       <div
         className="close"
         onClick={() => console.log("Remove task!")}
@@ -459,7 +474,7 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
           <input
             name="date"
             id="choose-date"
-            className="task-date-input active"
+            className="task-date-input"
             type="date"
             onChange={handleChange}
             value={todo.date}
@@ -572,7 +587,7 @@ function InboxAddTaskPopup({ setshowTaskPopup, setTasks, taskSources }) {
           <label htmlFor="choose-date">Date:</label>
           <input
             name="date"
-            className="task-date-input active"
+            className="task-date-input"
             type="date"
             onChange={handleChange}
             value={todo.date}
