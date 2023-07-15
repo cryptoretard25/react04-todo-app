@@ -101,4 +101,15 @@ export default class TodoBackEnd {
     return `${temp[2]}/${temp[1]}/${temp[0]}`;
   }
 
+  sortTodos = (val, tasks) => {
+    if (val === "Date")
+      return [...tasks].sort(
+        (a, b) => new Date(a.dueDate) - new Date(b.dueDate)
+      );
+    else if (val === "Name")
+      return [...tasks].sort((a, b) => a.title.localeCompare(b.title));
+    else if (val === "Project")
+      return [...tasks].sort((a, b) => a.source.localeCompare(b.source));
+  };
+
 }

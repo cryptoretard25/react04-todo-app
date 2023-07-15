@@ -18,6 +18,7 @@ function Sidebar({
   currentProject,
   setCurrentProject,
   setTasks,
+  setSortBy,
 }) {
   const [showProjectPopup, setShowProjectPopup] = useState(false);
 
@@ -29,18 +30,21 @@ function Sidebar({
           name={"Inbox"}
           currentProject={currentProject}
           setTasks={setTasks}
+          setSortBy={setSortBy}
         />
         <Project
           setCurrentProject={setCurrentProject}
           name={"Today"}
           currentProject={currentProject}
           setTasks={setTasks}
+          setSortBy={setSortBy}
         />
         <Project
           setCurrentProject={setCurrentProject}
           name={"This week"}
           currentProject={currentProject}
           setTasks={setTasks}
+          setSortBy={setSortBy}
         />
       </div>
       <div className="projects">
@@ -55,6 +59,7 @@ function Sidebar({
                 setCurrentProject={setCurrentProject}
                 setUserProjects={setUserProjects}
                 setTasks={setTasks}
+                setSortBy={setSortBy}
               />
             );
           })}
@@ -80,21 +85,29 @@ function Main({
   currentProject,
   setCurrentProject,
   userProjects,
+  sortBy,
+  setSortBy,
 }) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
   const sources = userProjects.map((project) => project.name);
 
   return (
     <div className="main-container">
-      <Title text={currentProject.name} tasks={tasks} setTasks={setTasks} />
+      <Title
+        text={currentProject.name}
+        tasks={tasks}
+        setTasks={setTasks}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+      />
       <div className="task-list" id="task-list">
-        {tasks.map((task) => {
+        {todoBack.sortTodos(sortBy, tasks).map((task) => {
           return (
             <Task
               task={task}
               key={task.uid}
               currentProject={currentProject}
-              setTasks={setTasks}
+              sortBy={sortBy}
             />
           );
         })}
@@ -222,6 +235,7 @@ function Project({
   setCurrentProject,
   setUserProjects,
   setTasks,
+  setSortBy,
 }) {
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
@@ -244,6 +258,7 @@ function Project({
     const projectName = e.currentTarget.querySelector("div").textContent;
 
     setTasks(renderDataFilter(projectName));
+    setSortBy("Project");
     setCurrentProject(todoBack.getProject(projectName));
   };
 
@@ -289,19 +304,9 @@ function Project({
   }
 }
 
-function Title({ text, tasks, setTasks }) {
-  console.log(tasks);
-  const sort = (e) => {
-    const val = e.target.value;
-    if (val === "Date")
-      setTasks(
-        [...tasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-      );
-    else if (val === "Name")
-      setTasks([...tasks].sort((a, b) => a.title.localeCompare(b.title)));
-
-    else if (val === 'Project')
-      setTasks([...tasks].sort((a, b) => a.source.localeCompare(b.source)));
+function Title({ text, tasks, setTasks, sortBy, setSortBy }) {
+  const handleChange = (e) => {
+    setSortBy(e.target.value);
   };
 
   return (
@@ -309,7 +314,8 @@ function Title({ text, tasks, setTasks }) {
       <h3 className="main-title">{text}</h3>
       <label htmlFor="sort-by">Sort by:</label>
       <select
-        onChange={sort}
+        value={sortBy}
+        onChange={handleChange}
         className="project-dropdown"
         id="sort-by"
         name="project"
@@ -322,20 +328,20 @@ function Title({ text, tasks, setTasks }) {
   );
 }
 
-function Task({ task, currentProject, setTasks }) {
+function Task({ task, currentProject }) {
   const lineTrough = () => {
     return task.completed
       ? { textDecoration: "line-through", color: "grey" }
       : null;
   };
-
   return (
     <div className="task" dataset-uid={task.uid}>
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
       <div className="task-name active" style={lineTrough()}>
-        {currentProject.name === "This week" ||
+        {
+        currentProject.name === "This week" ||
         currentProject.name === "Today" ||
-        "Inbox"
+        currentProject.name === "Inbox"
           ? `${task.title} (${task.source})`
           : task.title}
       </div>
@@ -575,6 +581,9 @@ function App() {
   );
   const [tasks, setTasks] = useState(todoBack.getAllUserProjectTasks());
   const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
+  const [sortBy, setSortBy] = useState("Project");
+
+  console.log(sortBy);
 
   console.log(currentProject);
   return (
@@ -586,6 +595,7 @@ function App() {
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
         setTasks={setTasks}
+        setSortBy={setSortBy}
       />
       <Main
         tasks={tasks}
@@ -593,6 +603,8 @@ function App() {
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
         userProjects={userProjects}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
       />
       <Footer />
     </>
