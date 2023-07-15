@@ -240,21 +240,8 @@ function Project({
   const setActive = () =>
     currentProject && currentProject.name === name ? "on-active" : "";
 
-  // const renderDataFilter = (projectName) => {
-  //   if (projectName === "Inbox") {
-  //     return todoBack.getAllUserProjectTasks();
-  //   }
-  //   if (projectName === "Today") {
-  //     return todoBack.getUserProjectsTodayTasks();
-  //   }
-  //   if (projectName === "This week") {
-  //     return todoBack.getUserProjectsThisWeekTasks();
-  //   }
-  //   return todoBack.getProject(projectName).tasks;
-  // };
-
   const onProjectClick = (e) => {
-    if (e.target.id === "x") return;
+    if (e.target.id === "remove") return;
     const projectName = e.currentTarget.querySelector("div").textContent;
 
     setTasks(todoBack.renderDataFilter(projectName));
@@ -298,7 +285,7 @@ function Project({
       >
         <img src="./img/list-box-outline.svg" alt="" />
         <div className="project-name">{name}</div>
-        <div id="x" onClick={removeProject}></div>
+        <div className="remove" id="remove" onClick={removeProject}></div>
       </button>
     );
   }
