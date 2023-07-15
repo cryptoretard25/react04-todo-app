@@ -12,12 +12,12 @@ export default class TodoBackEnd {
     this.projects = projects;
   }
 
-  getAllProjectNames(userProjects){
+  getAllProjectNames(userProjects) {
     const names = [];
-    for(const project of userProjects){
-      names.push(project.name)
+    for (const project of userProjects) {
+      names.push(project.name);
     }
-    return names
+    return names;
   }
 
   getUserProjects() {
@@ -29,14 +29,16 @@ export default class TodoBackEnd {
     );
   }
 
-  getAllUserProjectTasks(){
-    const userProjects =this.getUserProjects();
-    const allTasks = [];
-    for(const project of userProjects){
-      allTasks.push(project.tasks)
+  getAllUserProjectTasks() {
+    const userProjects = this.getUserProjects();
+    let allTasks = [];
+    for (const project of userProjects) {
+      allTasks.push(...project.tasks);
     }
-    return allTasks.flat();
+    return allTasks;
   }
+
+  //
 
   getUserProjectsTodayTasks() {
     const userProjects = this.getUserProjects();
@@ -51,9 +53,9 @@ export default class TodoBackEnd {
     const userProjects = this.getUserProjects();
     const thisWeekTasks = [];
     for (const project of userProjects) {
-      thisWeekTasks.push(project.thisWeekTasks());
+      thisWeekTasks.push(...project.thisWeekTasks());
     }
-    return thisWeekTasks.flat();
+    return thisWeekTasks;
   }
 
   getProjects() {
@@ -93,4 +95,10 @@ export default class TodoBackEnd {
     const index = this.projects.findIndex((project) => project.uid === uid);
     if (index !== -1) this.projects.splice(index, 1);
   }
+
+  formatDate(date) {
+    let temp = date.split("-");
+    return `${temp[2]}/${temp[1]}/${temp[0]}`;
+  }
+
 }

@@ -267,6 +267,20 @@ h3 {
   padding: 4px;
 }
 
+.title-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.main-title{
+  flex:1;
+}
+
+#sort-by{
+  margin: 0 0 0 1rem;
+}
+
 .input-wrapper{
   display: flex;
   flex-direction: column;

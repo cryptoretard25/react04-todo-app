@@ -74,13 +74,19 @@ function Sidebar({
   );
 }
 
-function Main({ tasks, setTasks, currentProject, setCurrentProject, userProjects }) {
+function Main({
+  tasks,
+  setTasks,
+  currentProject,
+  setCurrentProject,
+  userProjects,
+}) {
   const [showTaskPopup, setshowTaskPopup] = useState(false);
-  const sources = userProjects.map(project=> project.name)
+  const sources = userProjects.map((project) => project.name);
 
   return (
     <div className="main-container">
-      <Title text={currentProject.name} />
+      <Title text={currentProject.name} tasks={tasks} setTasks={setTasks} />
       <div className="task-list" id="task-list">
         {tasks.map((task) => {
           return (
@@ -283,8 +289,37 @@ function Project({
   }
 }
 
-function Title({ text }) {
-  return <h3 className="main-title">{text}</h3>;
+function Title({ text, tasks, setTasks }) {
+  console.log(tasks);
+  const sort = (e) => {
+    const val = e.target.value;
+    if (val === "Date")
+      setTasks(
+        [...tasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+      );
+    else if (val === "Name")
+      setTasks([...tasks].sort((a, b) => a.title.localeCompare(b.title)));
+
+    else if (val === 'Project')
+      setTasks([...tasks].sort((a, b) => a.source.localeCompare(b.source)));
+  };
+
+  return (
+    <div className="title-wrapper">
+      <h3 className="main-title">{text}</h3>
+      <label htmlFor="sort-by">Sort by:</label>
+      <select
+        onChange={sort}
+        className="project-dropdown"
+        id="sort-by"
+        name="project"
+      >
+        <option>Project</option>
+        <option>Name</option>
+        <option>Date</option>
+      </select>
+    </div>
+  );
 }
 
 function Task({ task, currentProject, setTasks }) {
@@ -340,17 +375,14 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
     setTodo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const formatDate = (date) => {
-    let temp = date.split("-");
-    return `${temp[2]}/${temp[1]}/${temp[0]}`;
-  };
-
   const addTask = () => {
     try {
       currentProject.addUserTask(todo.title, todo.date, currentProject.name);
       setTasks([...currentProject.tasks]);
       setError(
-        `Task: "${todo.title}" added. Expiration date: ${formatDate(todo.date)}`
+        `Task: "${todo.title}" added. Expiration date: ${todoBack.formatDate(
+          todo.date
+        )}`
       );
       Storage.saveTodoBack(todoBack);
     } catch (error) {
@@ -423,16 +455,13 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
   );
 }
 
-function InboxAddTaskPopup({
-  setshowTaskPopup,
-  currentProject,
-  setTasks,
-  taskSources,
-}) {
+function InboxAddTaskPopup({ setshowTaskPopup, setTasks, taskSources }) {
   const cleanTodo = {
+    project: taskSources[0],
     title: "",
     date: "",
   };
+
   const [error, setError] = useState(null);
   const [todo, setTodo] = useState(cleanTodo);
 
@@ -441,17 +470,15 @@ function InboxAddTaskPopup({
     setTodo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const formatDate = (date) => {
-    let temp = date.split("-");
-    return `${temp[2]}/${temp[1]}/${temp[0]}`;
-  };
-
   const addTask = () => {
+    const project = todoBack.getProject(todo.project);
     try {
-      currentProject.addUserTask(todo.title, todo.date, currentProject.name);
-      setTasks([...currentProject.tasks]);
+      project.addUserTask(todo.title, todo.date, todo.project);
+      setTasks(todoBack.getAllUserProjectTasks());
       setError(
-        `Task: "${todo.title}" added. Expiration date: ${formatDate(todo.date)}`
+        `Task: "${todo.title}" added. Expiration date: ${todoBack.formatDate(
+          todo.date
+        )}`
       );
       Storage.saveTodoBack(todoBack);
     } catch (error) {
@@ -485,7 +512,13 @@ function InboxAddTaskPopup({
       <div className="task-container">
         <div className="input-wrapper">
           <label htmlFor="choose-project">Project:</label>
-          <select className="project-dropdown" id="choose-project">
+          <select
+            className="project-dropdown"
+            id="choose-project"
+            name="project"
+            onChange={handleChange}
+            value={todo.project}
+          >
             {taskSources.map((source, index) => {
               return (
                 <option key={index} value={source}>
@@ -493,9 +526,6 @@ function InboxAddTaskPopup({
                 </option>
               );
             })}
-            {/* <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option> */}
           </select>
         </div>
         <div className="input-wrapper name">

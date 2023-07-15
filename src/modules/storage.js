@@ -29,8 +29,6 @@ export default class Storage {
       project.getCompleted().map(task => Object.assign(new Todo, task))
     ))
 
-    
-    log(todoBack);
     return todoBack;
   }
 }
