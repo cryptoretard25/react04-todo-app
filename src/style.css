@@ -236,6 +236,52 @@ h3 {
     );
 }
 
+.close {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16.00 16.00' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:cc='http://creativecommons.org/ns%23' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns%23' xmlns='http://www.w3.org/2000/svg' version='1.1' id='svg8' fill='%23000000'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3Crect x='0' y='0' width='16.00' height='16.00' rx='0' fill='%23334155' strokewidth='0'%3E%3C/rect%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cmetadata id='metadata5'%3E%3Crdf:rdf%3E%3Ccc:work%3E%3Cdc:format%3Eimage/svg+xml%3C/dc:format%3E%3Cdc:type rdf:resource='http://purl.org/dc/dcmitype/StillImage'%3E%3C/dc:type%3E%3Cdc:title%3E%3C/dc:title%3E%3Cdc:date%3E2021%3C/dc:date%3E%3Cdc:creator%3E%3Ccc:agent%3E%3Cdc:title%3ETimothée Giet%3C/dc:title%3E%3C/cc:agent%3E%3C/dc:creator%3E%3Ccc:license rdf:resource='http://creativecommons.org/licenses/by-sa/4.0/'%3E%3C/cc:license%3E%3C/cc:work%3E%3Ccc:license rdf:about='http://creativecommons.org/licenses/by-sa/4.0/'%3E%3Ccc:permits rdf:resource='http://creativecommons.org/ns%23Reproduction'%3E%3C/cc:permits%3E%3Ccc:permits rdf:resource='http://creativecommons.org/ns%23Distribution'%3E%3C/cc:permits%3E%3Ccc:requires rdf:resource='http://creativecommons.org/ns%23Notice'%3E%3C/cc:requires%3E%3Ccc:requires rdf:resource='http://creativecommons.org/ns%23Attribution'%3E%3C/cc:requires%3E%3Ccc:permits rdf:resource='http://creativecommons.org/ns%23DerivativeWorks'%3E%3C/cc:permits%3E%3Ccc:requires rdf:resource='http://creativecommons.org/ns%23ShareAlike'%3E%3C/cc:requires%3E%3C/cc:license%3E%3C/rdf:rdf%3E%3C/metadata%3E%3Crect transform='rotate(45)' ry='0' y='-1' x='4.3137083' height='2' width='14' id='rect1006' style='opacity:1;vector-effect:none;fill:%23ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.20000005;stroke-opacity:1'%3E%3C/rect%3E%3Crect transform='rotate(-45)' ry='0' y='10.313708' x='-7' height='2' width='14' id='rect1006-5' style='opacity:1;vector-effect:none;fill:%23ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.20000005;stroke-opacity:1'%3E%3C/rect%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: var(--stale-900);
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.edit {
+  background-image: url('data:image/svg+xml,%3Csvg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64px" height="64px" viewBox="-132.22 -132.22 793.34 793.34" xml:space="preserve" stroke="white"%3E%3Cg id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(0,0), scale(1)"%3E%3Crect x="-132.22" y="-132.22" width="793.34" height="793.34" rx="0" fill="%23334155" strokewidth="0"%3E%3C/rect%3E%3C/g%3E%3Cg id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="%23CCCCCC" stroke-width="13.751374000000002"%3E%3C/g%3E%3Cg id="SVGRepo_iconCarrier"%3E %3Cg%3E %3Cpath d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981 c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611 C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069 L27.473,390.597L0.3,512.69z"%3E%3C/path%3E %3C/g%3E %3C/g%3E%3C/svg%3E');
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.done {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 -0.5 21 21' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill='' stroke=''%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Ctitle%3Edone_fill %5B%231486%5D%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Dribbble-Light-Preview' transform='translate(-219.000000, -360.000000)' fill='%23334155'%3E%3Cg id='icons' transform='translate(56.000000, 160.000000)'%3E%3Cpath d='M173.0527,213.753 L173.0527,213.753 L173.05165,213.753 L169.3399,210.217 L170.8246,208.803 L173.0527,210.925 L177.50785,206.682 L178.99255,208.096 L173.0527,213.753 Z M163,220 L184,220 L184,200 L163,200 L163,220 Z' id='done_fill-%5B%231486%5D'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 150% auto;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.remove {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='-2.1 -2.1 25.20 25.20' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill='%23000000'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3Crect x='-2.1' y='-2.1' width='25.20' height='25.20' rx='0' fill='%23334155' strokewidth='0'%3E%3C/rect%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Ctitle%3Edelete %5B%231487%5D%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Dribbble-Light-Preview' transform='translate(-179.000000, -360.000000)' fill='%23ffffff'%3E%3Cg id='icons' transform='translate(56.000000, 160.000000)'%3E%3Cpath d='M130.35,216 L132.45,216 L132.45,208 L130.35,208 L130.35,216 Z M134.55,216 L136.65,216 L136.65,208 L134.55,208 L134.55,216 Z M128.25,218 L138.75,218 L138.75,206 L128.25,206 L128.25,218 Z M130.35,204 L136.65,204 L136.65,202 L130.35,202 L130.35,204 Z M138.75,204 L138.75,200 L128.25,200 L128.25,204 L123,204 L123,206 L126.15,206 L126.15,220 L140.85,220 L140.85,206 L144,206 L144,204 L138.75,204 Z' id='delete-%5B%231487%5D'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 95% auto;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: var(--stale-900);
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.task-buttons {
+  display: flex;
+  gap: 3px;
+}
+
 .add-task-menu {
   background-color: var(--stale-100);
   gap: 1.5rem;
@@ -256,7 +302,7 @@ h3 {
   background-color: var(--stale-300);
 }
 
-.on-active{
+.on-active {
   background-color: var(--stale-300);
 }
 
@@ -265,42 +311,42 @@ h3 {
   height: 2.5rem;
 }
 
-.project-dropdown{
+.project-dropdown {
   font-size: 1.6rem;
   border: 2px solid var(--stale-400);
   border-radius: 5px;
   padding: 4px;
 }
 
-.title-wrapper{
+.title-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
 
-.main-title{
-  flex:1;
+.main-title {
+  flex: 1;
 }
 
-#sort-by{
+#sort-by {
   margin: 0 0 0 1rem;
 }
 
-.input-wrapper{
+.input-wrapper {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.input-wrapper.name{
+.input-wrapper.name {
   flex: 1;
 }
 
-.project-dropdown:focus{
+.project-dropdown:focus {
   outline: none;
 }
 
-button:not(.project):active{
+button:not(.project):active {
   transform: scale(0.98);
 }
 
@@ -327,15 +373,15 @@ button:not(.project):active{
   -gap: 1.5rem;
 }
 
-.error-div{
+.error-div {
   color: red;
 }
 
 .popup-menu-task {
   border: 1px solid var(--stale-400);
   border-radius: 5px;
-   padding: 1rem;
-   background-color: var(--stale-100);
+  padding: 1rem;
+  background-color: var(--stale-100);
 }
 
 .popup-buttons {
@@ -381,7 +427,7 @@ button:not(.project):active{
   justify-content: center;
 }
 
-#add-project-popup{
+#add-project-popup {
   gap: 1rem;
 }
 
@@ -408,7 +454,7 @@ button:not(.project):active{
   padding: 2px;
   width: 10rem;
 }
-.task-date-input:focus{
+.task-date-input:focus {
   outline: none;
 }
 

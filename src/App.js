@@ -329,9 +329,14 @@ function Title({ text, sortBy, setSortBy }) {
 }
 
 function Task({ task, currentProject, setTasks }) {
-  const [edit, setEdit] = useState({ description: false, date: false });
   const currProject = todoBack.getProject(task.source);
   const currTask = currProject.getTaskByUID(task.uid);
+
+  const [edit, setEdit] = useState({ description: false, date: false });
+  const [newTaskInfo, setNewTaskInfo] = useState({
+    description: task.title,
+    date: task.dueDate,
+  });
 
   //console.log(task)
 
@@ -341,19 +346,16 @@ function Task({ task, currentProject, setTasks }) {
       : null;
   };
 
-  const onDescriptionClickHandle = (e) => {
+  const onClickHandle = (e) => {
     if (e.target.className === "task") return;
-
-    //console.log(currProject, currTask);
-    //currTask.title = "Edited";
-    setEdit((prev) => ({ ...prev, description: true }));
-    setTasks([...todoBack.renderDataFilter(currentProject.name)])
+    const { id } = e.target;
+    setEdit((prev) => ({ ...prev, [id]: true }));
   };
 
-  const onDateClickHandle = (e) => {
-    if (e.target.className === "task") return;
-
-    setEdit((prev) => ({ ...prev, date: true }));
+  const onChangeHandle = (e) => {
+    const { name, value } = e.target;
+    setNewTaskInfo((prev) => ({ ...prev, [name]: value }));
+    console.log(newTaskInfo);
   };
 
   return (
@@ -363,8 +365,9 @@ function Task({ task, currentProject, setTasks }) {
       {!edit.description ? (
         <div
           className="task-name"
+          id="description"
           style={lineTrough()}
-          onClick={onDescriptionClickHandle}
+          onClick={onClickHandle}
         >
           {currentProject.name === "This week" ||
           currentProject.name === "Today" ||
@@ -373,26 +376,38 @@ function Task({ task, currentProject, setTasks }) {
             : task.title}
         </div>
       ) : (
-        <input className="task-name-input"></input>
+        <input
+          className="task-name-input"
+          value={newTaskInfo.description}
+          name="description"
+          onChange={onChangeHandle}
+        ></input>
       )}
 
       {!edit.date ? (
         <div
           className="task-date"
+          id="date"
           style={lineTrough()}
-          onClick={onDateClickHandle}
+          onClick={onClickHandle}
         >
           {task.getDueDate()}
         </div>
       ) : (
-        <input type="date" className="task-date-input" />
+        <input
+          type="date"
+          name="date"
+          className="task-date-input"
+          value={newTaskInfo.date}
+          onChange={onChangeHandle}
+        />
       )}
-
-      <div
-        className="close"
-        onClick={() => console.log("Remove task!")}
-        id="x"
-      ></div>
+      <div className="task-buttons">
+        <div className="edit" id="edit"></div>
+        <div className="done" id="done"></div>
+        <div className="close" id="close"></div>
+        <div className="remove" id="remove"></div>
+      </div>
     </div>
   );
 }
