@@ -332,7 +332,7 @@ function Task({ task, currentProject, setTasks }) {
     setNewTaskInfo(defaultTaskInfo);
   };
 
-  const onDoneClickHandle = (e) => {
+  const onDoneClickHandle = () => {
     if (
       currTask.title !== newTaskInfo.description &&
       currProject.getTask(newTaskInfo.description)
@@ -346,6 +346,12 @@ function Task({ task, currentProject, setTasks }) {
     setTasks(todoBack.renderDataFilter(currentProject.name));
     setNewTaskInfo(null);
     setEdit(false);
+    Storage.saveTodoBack(todoBack);
+  };
+
+  const onRemoveClickHandle = () => {
+    currProject.removeTask(task.uid);
+    setTasks(todoBack.renderDataFilter(currentProject.name));
     Storage.saveTodoBack(todoBack);
   };
 
@@ -398,7 +404,11 @@ function Task({ task, currentProject, setTasks }) {
         {!edit ? (
           <>
             <div className="edit" id="edit" onClick={setEditHandle}></div>
-            <div className="remove" id="remove"></div>
+            <div
+              className="remove"
+              id="remove"
+              onClick={onRemoveClickHandle}
+            ></div>
           </>
         ) : (
           <>
