@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
+import { set } from "date-fns";
 
 const todoBack = Storage.getTodoBack();
 
@@ -319,11 +320,37 @@ function Task({ task, currentProject, setTasks }) {
   const currProject = todoBack.getProject(task.source);
   const currTask = currProject.getTaskByUID(task.uid);
 
-  const [edit, setEdit] = useState({ description: false, date: false });
-  const [newTaskInfo, setNewTaskInfo] = useState({
-    description: task.title,
-    date: task.dueDate,
-  });
+  const defaultTaskInfo = { description: task.title, date: task.dueDate };
+
+  const [newTaskInfo, setNewTaskInfo] = useState(null);
+  //const [edit, setEdit] = useState({ description: false, date: false });
+  const [edit, setEdit] = useState(false);
+
+  const setEditHandle = (e) => {
+    const { id } = e.target;
+    if (id === "edit") setEdit(true);
+    else if (id === "close") {
+      setEdit(false);
+    }
+    setNewTaskInfo(defaultTaskInfo);
+  };
+
+  const onDoneClickHandle = (e) => {
+    if (
+      currTask.title !== newTaskInfo.description &&
+      currProject.getTask(newTaskInfo.description)
+    ) {
+      alert("Task exists");
+      setNewTaskInfo(defaultTaskInfo);
+      return;
+    }
+    currTask.title = newTaskInfo.description;
+    currTask.dueDate = newTaskInfo.date;
+    setTasks(todoBack.renderDataFilter(currentProject.name));
+    setNewTaskInfo(null);
+    setEdit(false);
+    Storage.saveTodoBack(todoBack);
+  };
 
   //console.log(task)
 
@@ -333,11 +360,11 @@ function Task({ task, currentProject, setTasks }) {
       : null;
   };
 
-  const onClickHandle = (e) => {
-    if (e.target.className === "task") return;
-    const { id } = e.target;
-    setEdit((prev) => ({ ...prev, [id]: true }));
-  };
+  // const onClickHandle = (e) => {
+  //   if (e.target.className === "task") return;
+  //   const { id } = e.target;
+  //   setEdit((prev) => ({ ...prev, [id]: true }));
+  // };
 
   const onChangeHandle = (e) => {
     const { name, value } = e.target;
@@ -348,52 +375,49 @@ function Task({ task, currentProject, setTasks }) {
   return (
     <div className="task">
       <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
-
-      {!edit.description ? (
-        <div
-          className="task-name"
-          id="description"
-          style={lineTrough()}
-          onClick={onClickHandle}
-        >
-          {currentProject.name === "This week" ||
-          currentProject.name === "Today" ||
-          currentProject.name === "Inbox"
-            ? `${task.title} (${task.source})`
-            : task.title}
-        </div>
+      {!edit ? (
+        <>
+          <div className="task-name" id="description" style={lineTrough()}>
+            {currentProject.name === "This week" ||
+            currentProject.name === "Today" ||
+            currentProject.name === "Inbox"
+              ? `${task.title} (${task.source})`
+              : task.title}
+          </div>
+          <div className="task-date" id="date" style={lineTrough()}>
+            {task.getDueDate()}
+          </div>
+        </>
       ) : (
-        <input
-          className="task-name-input"
-          value={newTaskInfo.description}
-          name="description"
-          onChange={onChangeHandle}
-        ></input>
-      )}
-
-      {!edit.date ? (
-        <div
-          className="task-date"
-          id="date"
-          style={lineTrough()}
-          onClick={onClickHandle}
-        >
-          {task.getDueDate()}
-        </div>
-      ) : (
-        <input
-          type="date"
-          name="date"
-          className="task-date-input"
-          value={newTaskInfo.date}
-          onChange={onChangeHandle}
-        />
+        <>
+          <input
+            type="text"
+            name="description"
+            className="task-name-input"
+            value={newTaskInfo.description}
+            onChange={onChangeHandle}
+          />
+          <input
+            type="date"
+            name="date"
+            className="task-date-input"
+            value={newTaskInfo.date}
+            onChange={onChangeHandle}
+          />
+        </>
       )}
       <div className="task-buttons">
-        <div className="edit" id="edit"></div>
-        <div className="done" id="done"></div>
-        <div className="close" id="close"></div>
-        <div className="remove" id="remove"></div>
+        {!edit ? (
+          <>
+            <div className="edit" id="edit" onClick={setEditHandle}></div>
+            <div className="remove" id="remove"></div>
+          </>
+        ) : (
+          <>
+            <div className="done" id="done" onClick={onDoneClickHandle}></div>
+            <div className="close" id="close" onClick={setEditHandle}></div>
+          </>
+        )}
       </div>
     </div>
   );
