@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
-import { set } from "date-fns";
 
 const todoBack = Storage.getTodoBack();
 
@@ -319,11 +318,9 @@ function Title({ text, sortBy, setSortBy }) {
 function Task({ task, currentProject, setTasks }) {
   const currProject = todoBack.getProject(task.source);
   const currTask = currProject.getTaskByUID(task.uid);
-
   const defaultTaskInfo = { description: task.title, date: task.dueDate };
 
   const [newTaskInfo, setNewTaskInfo] = useState(null);
-  //const [edit, setEdit] = useState({ description: false, date: false });
   const [edit, setEdit] = useState(false);
 
   const setEditHandle = (e) => {
@@ -352,24 +349,15 @@ function Task({ task, currentProject, setTasks }) {
     Storage.saveTodoBack(todoBack);
   };
 
-  //console.log(task)
-
   const lineTrough = () => {
     return task.completed
       ? { textDecoration: "line-through", color: "grey" }
       : null;
   };
 
-  // const onClickHandle = (e) => {
-  //   if (e.target.className === "task") return;
-  //   const { id } = e.target;
-  //   setEdit((prev) => ({ ...prev, [id]: true }));
-  // };
-
   const onChangeHandle = (e) => {
     const { name, value } = e.target;
     setNewTaskInfo((prev) => ({ ...prev, [name]: value }));
-    console.log(newTaskInfo);
   };
 
   return (
