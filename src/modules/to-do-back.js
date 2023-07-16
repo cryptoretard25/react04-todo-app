@@ -110,12 +110,11 @@ export default class TodoBackEnd {
       return [...tasks].sort((a, b) => a.title.localeCompare(b.title));
     else if (val === "Project")
       return [...tasks].sort((a, b) => a.source.localeCompare(b.source));
-    const cases = {
-
-    }
+    else if (val === "completed")
+      return [...tasks].sort((a, b) => Number(b.completed) - Number(a.completed))
   };
 
-    renderDataFilter (projectName){
+  renderDataFilter(projectName) {
     if (projectName === "Inbox") {
       return this.getAllUserProjectTasks();
     }
@@ -126,6 +125,5 @@ export default class TodoBackEnd {
       return this.getUserProjectsThisWeekTasks();
     }
     return this.getProject(projectName).tasks;
-  };
-
+  }
 }

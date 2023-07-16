@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
 
+
 const todoBack = Storage.getTodoBack();
 
 function Header() {
@@ -102,16 +103,19 @@ function Main({
         setSortBy={setSortBy}
       />
       <div className="task-list" id="task-list">
-        {todoBack.sortTodos(sortBy, tasks).map((task) => {
-          return (
-            <Task
-              task={task}
-              key={task.uid}
-              currentProject={currentProject}
-              setTasks={setTasks}
-            />
-          );
-        })}
+        {todoBack
+          .sortTodos("completed", todoBack.sortTodos(sortBy, tasks))
+          .map((task) => {
+            return (
+              <Task
+                task={task}
+                key={task.uid}
+                currentProject={currentProject}
+                setTasks={setTasks}
+                setSortBy={setSortBy}
+              />
+            );
+          })}
       </div>
       {currentProject.name === "Today" ||
       currentProject.name === "This week" ? null : currentProject.name ===
@@ -320,7 +324,12 @@ function Title({ text, sortBy, setSortBy }) {
 function Task({ task, currentProject, setTasks }) {
   const currProject = todoBack.getProject(task.source);
   const currTask = currProject.getTaskByUID(task.uid);
-  const defaultTaskInfo = { description: task.title, date: task.dueDate };
+  const defaultTaskInfo = {
+    description: task.title,
+    date: task.dueDate,
+    completed: task.completed,
+  };
+  //console.log(tasks)
 
   const [newTaskInfo, setNewTaskInfo] = useState(null);
   const [edit, setEdit] = useState(false);
@@ -332,6 +341,14 @@ function Task({ task, currentProject, setTasks }) {
       setEdit(false);
     }
     setNewTaskInfo(defaultTaskInfo);
+  };
+
+  const onCompleteClickHandle = (e) => {
+    currTask.completed = !currTask.completed;
+    const { id } = e.target;
+    setNewTaskInfo((prev) => ({ ...prev, [id]: currTask.completed }));
+    setTasks([...todoBack.renderDataFilter(currentProject.name)]);
+    Storage.saveTodoBack(todoBack)
   };
 
   const onDoneClickHandle = () => {
@@ -370,7 +387,11 @@ function Task({ task, currentProject, setTasks }) {
 
   return (
     <div className="task">
-      <div className="complete" id={task.completed ? "o-clicked" : "o"}></div>
+      <div
+        className={task.completed ? "o-clicked" : "o"}
+        id="completed"
+        onClick={onCompleteClickHandle}
+      ></div>
       {!edit ? (
         <>
           <div className="task-name" id="description" style={lineTrough()}>
@@ -405,7 +426,7 @@ function Task({ task, currentProject, setTasks }) {
       <div className="task-buttons">
         {!edit ? (
           <>
-            <div className="edit" id="edit" onClick={setEditHandle}></div>
+            {!task.completed? <div className="edit" id="edit" onClick={setEditHandle}></div>:null}
             <div
               className="remove"
               id="remove"
@@ -569,9 +590,9 @@ function InboxAddTaskPopup({
           ? `New project: "${todo.newProject}" added with task: "${
               todo.title
             }" added. Expiration date: ${todoBack.formatDate(todo.date)}`
-          : `Task: "${
-              todo.title
-            }" was added to project "${todo.project}". Expiration date: ${todoBack.formatDate(todo.date)}`
+          : `Task: "${todo.title}" was added to project "${
+              todo.project
+            }". Expiration date: ${todoBack.formatDate(todo.date)}`
       );
       Storage.saveTodoBack(todoBack);
     } catch (error) {

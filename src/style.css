@@ -154,7 +154,7 @@ h3 {
   width: 10rem;
 }
 
-#o {
+.o {
   cursor: pointer;
   border-radius: 50%;
   width: 2rem;
@@ -163,7 +163,7 @@ h3 {
   border: 3px solid var(--stale-900);
 }
 
-#o-clicked {
+.o-clicked {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -176,7 +176,7 @@ h3 {
   border: 3px solid var(--stale-900);
 }
 
-#o-clicked::before {
+.o-clicked::before {
   position: absolute;
   content: "";
   width: 1rem;
@@ -285,7 +285,10 @@ h3 {
 
 .task-buttons {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  min-width: 4.5rem;
 }
 
 .add-task-menu {
