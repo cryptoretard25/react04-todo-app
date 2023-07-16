@@ -187,7 +187,6 @@ function AddProjectPopup({ setShowProjectPopup, setUserProjects }) {
     }
     setUserProject(cleanUserProject);
     setTimeout(() => setError(null), 2000);
-    console.log("Add project clicked");
   };
 
   const onChangeHandler = (e) => {
@@ -329,7 +328,6 @@ function Task({ task, currentProject, setTasks }) {
     date: task.dueDate,
     completed: task.completed,
   };
-  //console.log(tasks)
 
   const [newTaskInfo, setNewTaskInfo] = useState(null);
   const [edit, setEdit] = useState(false);
@@ -565,7 +563,6 @@ function InboxAddTaskPopup({
     }
     const { name, value } = e.target;
     setTodo((prev) => ({ ...prev, [name]: value }));
-    console.log(todo);
   };
 
   const addTask = () => {
@@ -707,9 +704,6 @@ function App() {
   const [userProjects, setUserProjects] = useState(todoBack.getUserProjects());
   const [sortBy, setSortBy] = useState("Project");
 
-  console.log(sortBy);
-
-  console.log(currentProject);
   return (
     <>
       <Header />
