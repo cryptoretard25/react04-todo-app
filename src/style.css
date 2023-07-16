@@ -275,7 +275,10 @@ h3 {
   cursor: pointer;
 }
 
-.remove:active, .close:active, .edit:active, .done:active {
+.remove:active,
+.close:active,
+.edit:active,
+.done:active {
   transform: scale(0.85);
   transition: transform 0.2s ease;
 }
@@ -315,11 +318,11 @@ h3 {
 }
 
 .project-dropdown {
-  font-size: 1.6rem;
   border: 2px solid var(--stale-400);
   border-radius: 5px;
-  padding: 4px;
+  padding: 3px;
 }
+
 
 .title-wrapper {
   display: flex;
@@ -413,9 +416,9 @@ button:not(.project):active {
 .button-cancel:hover {
   background-color: rgba(240, 128, 128, 0.664);
 }
+
 .popup-menu-input {
   flex: 1;
-  font-size: 1.6rem;
   border: 2px solid var(--stale-400);
   border-radius: 5px;
   padding: 4px;
@@ -434,9 +437,6 @@ button:not(.project):active {
   gap: 1rem;
 }
 
-.popup-menu-input:focus {
-  outline: none;
-}
 
 .task-name-input {
   font-size: 1.6rem;
@@ -446,14 +446,23 @@ button:not(.project):active {
   flex: 1;
 }
 
+.new-project {
+  border: 2px solid var(--stale-400);
+  border-radius: 5px;
+  padding: 4px;
+}
+
+input:focus{
+  outline: none;
+}
+
 .task-name-input:focus {
   outline: none;
 }
 
 .task-date-input {
   font-family: var(--main-font);
-  font-size: 1.5rem;
-  border: 1px solid var(--stale-400);
+  border: 2px solid var(--stale-400);
   border-radius: 5px;
   padding: 2px;
   width: 10rem;

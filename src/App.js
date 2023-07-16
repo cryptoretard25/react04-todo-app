@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
+import { set } from "date-fns";
 
 const todoBack = Storage.getTodoBack();
 
@@ -85,6 +86,7 @@ function Main({
   currentProject,
   setCurrentProject,
   userProjects,
+  setUserProjects,
   sortBy,
   setSortBy,
 }) {
@@ -122,6 +124,7 @@ function Main({
               currentProject={currentProject}
               setCurrentProject={setCurrentProject}
               setTasks={setTasks}
+              setUserProjects={setUserProjects}
               taskSources={sources}
             />
           ) : (
@@ -506,14 +509,11 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
         </div>
       </div>
       <div className="popup-buttons">
-        <button
-          className="button-add popup-button task-popup-button-add"
-          onClick={addTask}
-        >
+        <button className="button-add popup-button" onClick={addTask}>
           Add
         </button>
         <button
-          className="button-cancel popup-button task-popup-button-cancel"
+          className="button-cancel popup-button"
           onClick={() => setshowTaskPopup(false)}
         >
           Cancel
@@ -523,9 +523,15 @@ function AddTaskPopup({ setshowTaskPopup, currentProject, setTasks }) {
   );
 }
 
-function InboxAddTaskPopup({ setshowTaskPopup, setTasks, taskSources }) {
+function InboxAddTaskPopup({
+  setshowTaskPopup,
+  setTasks,
+  setUserProjects,
+  taskSources,
+}) {
   const cleanTodo = {
-    project: taskSources[0],
+    project: "",
+    newProject: "",
     title: "",
     date: "",
   };
@@ -534,8 +540,12 @@ function InboxAddTaskPopup({ setshowTaskPopup, setTasks, taskSources }) {
   const [todo, setTodo] = useState(cleanTodo);
 
   const handleChange = (e) => {
+    if(!todo.project&&taskSources.length===1){
+      todo.project = taskSources[0]
+    }
     const { name, value } = e.target;
     setTodo((prev) => ({ ...prev, [name]: value }));
+    console.log(todo)
   };
 
   const addTask = () => {
@@ -579,22 +589,38 @@ function InboxAddTaskPopup({ setshowTaskPopup, setTasks, taskSources }) {
       </div>
       <div className="task-container">
         <div className="input-wrapper">
-          <label htmlFor="choose-project">Project:</label>
-          <select
-            className="project-dropdown"
-            id="choose-project"
-            name="project"
-            onChange={handleChange}
-            value={todo.project}
-          >
-            {taskSources.map((source, index) => {
-              return (
-                <option key={index} value={source}>
-                  {source}
-                </option>
-              );
-            })}
-          </select>
+          {taskSources.length ? (
+            <>
+              <label htmlFor="choose-project">Choose project:</label>
+              <select
+                className="project-dropdown"
+                id="choose-project"
+                name="project"
+                onChange={handleChange}
+                value={todo.project}
+              >
+                {taskSources.map((source, index) => {
+                  return (
+                    <option key={index} value={source}>
+                      {source}
+                    </option>
+                  );
+                })}
+              </select>
+            </>
+          ) : (
+            <>
+              <label htmlFor="new-project">New project:</label>
+              <input
+                type="text"
+                className="new-project"
+                id="new-project"
+                name="newProject"
+                onChange={handleChange}
+                value={todo.newProject}
+              />
+            </>
+          )}
         </div>
         <div className="input-wrapper name">
           <label htmlFor="input-add-task-popup">Task description:</label>
@@ -665,6 +691,7 @@ function App() {
         currentProject={currentProject}
         setCurrentProject={setCurrentProject}
         userProjects={userProjects}
+        setUserProjects={setUserProjects}
         sortBy={sortBy}
         setSortBy={setSortBy}
       />
