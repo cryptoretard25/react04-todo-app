@@ -335,6 +335,7 @@ h3 {
 }
 
 #sort-by {
+  font-size: 1.6rem;
   margin: 0 0 0 1rem;
 }
 
@@ -439,6 +440,7 @@ button:not(.project):active {
 
 
 .task-name-input {
+  min-height: 28px;
   font-size: 1.6rem;
   border: 1px solid var(--stale-400);
   border-radius: 5px;
@@ -461,11 +463,13 @@ input:focus{
 }
 
 .task-date-input {
+  min-height: 28px;
+  font-size: 1.6rem;
   font-family: var(--main-font);
-  border: 2px solid var(--stale-400);
+  border: 1px solid var(--stale-400);
   border-radius: 5px;
-  padding: 2px;
-  width: 10rem;
+  padding: 1px;
+  width: 10.5rem;
 }
 .task-date-input:focus {
   outline: none;

@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
-import { set } from "date-fns";
 
 const todoBack = Storage.getTodoBack();
 
@@ -540,23 +539,39 @@ function InboxAddTaskPopup({
   const [todo, setTodo] = useState(cleanTodo);
 
   const handleChange = (e) => {
-    if(!todo.project&&taskSources.length===1){
-      todo.project = taskSources[0]
+    if (!todo.project && taskSources.length === 1) {
+      todo.project = taskSources[0];
     }
     const { name, value } = e.target;
     setTodo((prev) => ({ ...prev, [name]: value }));
-    console.log(todo)
+    console.log(todo);
   };
 
   const addTask = () => {
+    if (!taskSources.length) {
+      if (!todo.newProject || !todo.title || !todo.date) {
+        setError("Error! Fill all fields properly!");
+        setTimeout(() => {
+          setError(false);
+        }, 2000);
+        return;
+      }
+      todoBack.addUserProject(todo.newProject);
+      setUserProjects(todoBack.getUserProjects());
+      todo.project = todo.newProject;
+    }
     const project = todoBack.getProject(todo.project);
     try {
       project.addUserTask(todo.title, todo.date, todo.project);
       setTasks(todoBack.getAllUserProjectTasks());
       setError(
-        `Task: "${todo.title}" added. Expiration date: ${todoBack.formatDate(
-          todo.date
-        )}`
+        todo.newProject
+          ? `New project: "${todo.newProject}" added with task: "${
+              todo.title
+            }" added. Expiration date: ${todoBack.formatDate(todo.date)}`
+          : `Task: "${
+              todo.title
+            }" was added to project "${todo.project}". Expiration date: ${todoBack.formatDate(todo.date)}`
       );
       Storage.saveTodoBack(todoBack);
     } catch (error) {
