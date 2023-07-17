@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
-
+import { set } from "date-fns";
 
 const todoBack = Storage.getTodoBack();
 
@@ -331,6 +331,7 @@ function Task({ task, currentProject, setTasks }) {
 
   const [newTaskInfo, setNewTaskInfo] = useState(null);
   const [edit, setEdit] = useState(false);
+  const [error, setError] = useState(null);
 
   const setEditHandle = (e) => {
     const { id } = e.target;
@@ -346,7 +347,7 @@ function Task({ task, currentProject, setTasks }) {
     const { id } = e.target;
     setNewTaskInfo((prev) => ({ ...prev, [id]: currTask.completed }));
     setTasks([...todoBack.renderDataFilter(currentProject.name)]);
-    Storage.saveTodoBack(todoBack)
+    Storage.saveTodoBack(todoBack);
   };
 
   const onDoneClickHandle = () => {
@@ -354,8 +355,11 @@ function Task({ task, currentProject, setTasks }) {
       currTask.title !== newTaskInfo.description &&
       currProject.getTask(newTaskInfo.description)
     ) {
-      alert("Task exists");
+      setError(
+        `Error! Task "${newTaskInfo.description}" already exists in a project "${currProject.name}"`
+      );
       setNewTaskInfo(defaultTaskInfo);
+      setTimeout(() => setError(null), 2000);
       return;
     }
     currTask.title = newTaskInfo.description;
@@ -363,6 +367,8 @@ function Task({ task, currentProject, setTasks }) {
     setTasks(todoBack.renderDataFilter(currentProject.name));
     setNewTaskInfo(null);
     setEdit(false);
+    // setError(`Success! Sucessfuly edited, project name: "${currProject.name}"`);
+    // setTimeout(() => setError(null), 2000);
     Storage.saveTodoBack(todoBack);
   };
 
@@ -384,61 +390,79 @@ function Task({ task, currentProject, setTasks }) {
   };
 
   return (
-    <div className="task">
-      <div
-        className={task.completed ? "o-clicked" : "o"}
-        id="completed"
-        onClick={onCompleteClickHandle}
-      ></div>
-      {!edit ? (
-        <>
-          <div className="task-name" id="description" style={lineTrough()}>
-            {currentProject.name === "This week" ||
-            currentProject.name === "Today" ||
-            currentProject.name === "Inbox"
-              ? `${task.title} (${task.source})`
-              : task.title}
-          </div>
-          <div className="task-date" id="date" style={lineTrough()}>
-            {task.getDueDate()}
-          </div>
-        </>
-      ) : (
-        <>
-          <input
-            type="text"
-            name="description"
-            className="task-name-input"
-            value={newTaskInfo.description}
-            onChange={onChangeHandle}
-          />
-          <input
-            type="date"
-            name="date"
-            className="task-date-input"
-            value={newTaskInfo.date}
-            onChange={onChangeHandle}
-          />
-        </>
-      )}
-      <div className="task-buttons">
+    <>
+      {error ? (
+        <div
+          className="task-error"
+          style={
+            error && error.includes("Error!")
+              ? { color: "red" }
+              : error && error.includes("Success!")
+              ? { color: "green" }
+              : { color: "black" }
+          }
+        >
+          {error}
+        </div>
+      ) : null}
+      <div className="task">
+        <div
+          className={task.completed ? "o-clicked" : "o"}
+          id="completed"
+          onClick={onCompleteClickHandle}
+        ></div>
         {!edit ? (
           <>
-            {!task.completed? <div className="edit" id="edit" onClick={setEditHandle}></div>:null}
-            <div
-              className="remove"
-              id="remove"
-              onClick={onRemoveClickHandle}
-            ></div>
+            <div className="task-name" id="description" style={lineTrough()}>
+              {currentProject.name === "This week" ||
+              currentProject.name === "Today" ||
+              currentProject.name === "Inbox"
+                ? `${task.title} (${task.source})`
+                : task.title}
+            </div>
+            <div className="task-date" id="date" style={lineTrough()}>
+              {task.getDueDate()}
+            </div>
           </>
         ) : (
           <>
-            <div className="done" id="done" onClick={onDoneClickHandle}></div>
-            <div className="close" id="close" onClick={setEditHandle}></div>
+            <input
+              type="text"
+              name="description"
+              className="task-name-input"
+              value={newTaskInfo.description}
+              onChange={onChangeHandle}
+            />
+            <input
+              type="date"
+              name="date"
+              className="task-date-input"
+              value={newTaskInfo.date}
+              onChange={onChangeHandle}
+            />
           </>
         )}
+        <div className="task-buttons">
+          {!edit ? (
+            <>
+              {!task.completed ? (
+                <div className="edit" id="edit" onClick={setEditHandle}></div>
+              ) : null}
+              <div
+                className="remove"
+                id="remove"
+                onClick={onRemoveClickHandle}
+              ></div>
+            </>
+          ) : (
+            <>
+              <div className="done" id="done" onClick={onDoneClickHandle}></div>
+              <div className="close" id="close" onClick={setEditHandle}></div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

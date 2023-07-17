@@ -111,6 +111,7 @@ h3 {
 }
 
 .main-container {
+  position: relative;
   grid-row: 2;
   grid-column: 2/4;
   background-color: var(--stale-100);
@@ -476,6 +477,17 @@ input:focus{
 }
 .task-date-input:focus {
   outline: none;
+}
+
+.task-error{
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  -border: 1px solid var(--stale-400);
+  border-radius: 5px;
+  padding: 0.5rem;
+  background-color: var(--stale-100);
 }
 
 .active {
