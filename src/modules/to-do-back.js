@@ -103,15 +103,17 @@ export default class TodoBackEnd {
 
   sortTodos = (val, tasks) => {
     if (val === "Date")
-      return [...tasks].sort(
-        (a, b) => new Date(a.dueDate) - new Date(b.dueDate)
-      );
+      return [...tasks]
+        .sort((a, b) => a.dueDate === "No date" ? -1 : b.dueDate === "No date" ? 1 : 0 )
+        .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
     else if (val === "Name")
       return [...tasks].sort((a, b) => a.title.localeCompare(b.title));
     else if (val === "Project")
       return [...tasks].sort((a, b) => a.source.localeCompare(b.source));
     else if (val === "completed")
-      return [...tasks].sort((a, b) => Number(b.completed) - Number(a.completed))
+      return [...tasks].sort(
+        (a, b) => Number(b.completed) - Number(a.completed)
+      );
   };
 
   renderDataFilter(projectName) {

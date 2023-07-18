@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import Storage from "./modules/storage";
-import { set } from "date-fns";
 
 const todoBack = Storage.getTodoBack();
 
@@ -572,10 +571,10 @@ function InboxAddTaskPopup({
   taskSources,
 }) {
   const cleanTodo = {
-    project: "",
+    project: taskSources[0],
     newProject: "",
     title: "",
-    date: "",
+    date: "No date",
   };
 
   const [error, setError] = useState(null);
@@ -585,11 +584,13 @@ function InboxAddTaskPopup({
     if (!todo.project && taskSources.length === 1) {
       todo.project = taskSources[0];
     }
+    
     const { name, value } = e.target;
     setTodo((prev) => ({ ...prev, [name]: value }));
   };
 
   const addTask = () => {
+    console.log('click')
     if (!taskSources.length) {
       if (!todo.newProject || !todo.title || !todo.date) {
         setError("Error! Fill all fields properly!");
